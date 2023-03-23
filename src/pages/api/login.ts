@@ -1,9 +1,9 @@
 import type { APIRoute } from "astro";
-import { loginSchema } from "../../lib/schemas";
+import { userAndPasswordSchema } from "../../lib/schemas";
 
 export const post: APIRoute = async ({ request, redirect }) => {
   const formData = await request.formData();
-  const result = loginSchema.safeParse(formData);
+  const result = userAndPasswordSchema.safeParse(formData);
 
   if (!result.success) {
     return new Response(

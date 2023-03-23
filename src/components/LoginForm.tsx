@@ -1,8 +1,8 @@
 import { Suspense, createSignal, createResource, Show } from "solid-js";
-import { loginSchema } from "../lib/schemas";
+import { userAndPasswordSchema } from "../lib/schemas";
 import type { z } from "zod";
 
-type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof loginSchema>>;
+type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof userAndPasswordSchema>>;
 
 async function postFormData(formData: FormData) {
   const response = await fetch("/api/login", {
@@ -25,7 +25,7 @@ export default function LoginForm() {
     e.preventDefault();
     setErrors(undefined);
     const data = new FormData(e.currentTarget as HTMLFormElement);
-    const result = loginSchema.safeParse(data);
+    const result = userAndPasswordSchema.safeParse(data);
 
     // if there are errors, set them and return
     if (!result.success) {
