@@ -1,0 +1,17 @@
+---
+import LoginForm from "../components/LoginForm";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <main class="w-full h-full flex flex-col items-center justify-center">
+    <section class="w-full max-w-md">
+      <h1 class="font-semibold text-2xl text-white w-full mb-1">Sign in</h1>
+      <p class="text-zinc-400 text-sm mb-8 w-full">
+        New to Astro? <a href="/signup" class="text-blue-400 font-medium"
+          >Sign up for an account</a>
+      </p>
+      <LoginForm client:load />
+    </section>
+  </main>
+</Layout>
