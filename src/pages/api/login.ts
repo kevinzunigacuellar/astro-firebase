@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { loginSchema } from "../../lib/schemas";
 
-export const post: APIRoute = async ({ request }) => {
+export const post: APIRoute = async ({ request, redirect }) => {
   const formData = await request.formData();
   const result = loginSchema.safeParse(formData);
 
@@ -14,7 +14,5 @@ export const post: APIRoute = async ({ request }) => {
     );
   }
 
-  console.log(result.data);
-
-  return new Response(JSON.stringify({ error: "Password is incorrect" }));
+  return redirect("/dashboard", 301);
 };

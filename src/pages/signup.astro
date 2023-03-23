@@ -1,0 +1,23 @@
+---
+import SignupForm from "../components/SignupForm";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Sign up">
+  <main class="w-full h-full flex flex-col items-center justify-center">
+    <section class="w-full max-w-md">
+      <h1 class="font-semibold text-2xl text-white w-full mb-1">
+        Create a new account
+      </h1>
+      <p class="text-zinc-400 text-sm mb-8 w-full">
+        Already have an account? <a
+          href="/login"
+          class="text-blue-400 font-medium"
+        >
+          Sign in
+        </a>
+      </p>
+      <SignupForm client:load />
+    </section>
+  </main>
+</Layout>

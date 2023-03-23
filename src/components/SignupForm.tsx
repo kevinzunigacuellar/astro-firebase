@@ -5,7 +5,7 @@ import type { z } from "zod";
 type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof loginSchema>>;
 
 async function postFormData(formData: FormData) {
-  const response = await fetch("/api/login", {
+  const response = await fetch("/api/register", {
     method: "POST",
     body: formData,
   });
@@ -16,7 +16,7 @@ async function postFormData(formData: FormData) {
   return data;
 }
 
-export default function LoginForm() {
+export default function SignupForm() {
   const [formData, setFormData] = createSignal<FormData>();
   const [errors, setErrors] = createSignal<Errors>();
   const [response] = createResource(formData, postFormData);
@@ -27,7 +27,7 @@ export default function LoginForm() {
     const data = new FormData(e.currentTarget as HTMLFormElement);
     const result = loginSchema.safeParse(data);
 
-    // if there are errors, set them and return
+    // client-side validation
     if (!result.success) {
       const errors = result.error.flatten() as Errors;
       setErrors(errors);
@@ -52,7 +52,7 @@ export default function LoginForm() {
           when={errors()?.fieldErrors.email}
           fallback={
             <p class="-mt-1 text-sm text-red-500 invisible">
-              Your email just boom
+              This is an email error
             </p>
           }
         >
@@ -75,7 +75,7 @@ export default function LoginForm() {
           when={errors()?.fieldErrors.password}
           fallback={
             <p class="-mt-1 text-sm text-red-500 invisible">
-              Your password just boom
+              This is a password error
             </p>
           }
         >
@@ -88,11 +88,10 @@ export default function LoginForm() {
         class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900"
         type="submit"
       >
-        Sign in
+        Sign up
       </button>
       {/* We will use this suspense to return server errors:
-          - wrong password 
-          - email does not exist
+          - email already exists
         */}
       <Suspense>{<p class="text-white">{response()?.error}</p>}</Suspense>
     </form>
