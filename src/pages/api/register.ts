@@ -2,7 +2,7 @@ import firebaseApp from '../../lib/firebase';
 import type { APIRoute } from 'astro';
 import { userAndPasswordSchema } from '../../lib/schemas';
 
-export const post: APIRoute = async ({ request, redirect }) => {
+export const post: APIRoute = async ({ request, redirect, cookies }) => {
   const formData = await request.formData();
   const result = userAndPasswordSchema.safeParse(formData);
 
@@ -18,13 +18,13 @@ export const post: APIRoute = async ({ request, redirect }) => {
 
   // create a new user in Firebase
   const { email, password } = result.data;
-  let user;
-  try {
-    user = await firebaseApp.auth().createUser({
-      email,
-      password,
-    });
-  } catch (error) {
+ 
+  const user = await firebaseApp.auth().createUser({
+    email,
+    password,
+  });
+
+  if (!user) {
     return new Response(
       JSON.stringify({
         errors: 'Something went wrong',
@@ -32,12 +32,19 @@ export const post: APIRoute = async ({ request, redirect }) => {
       { status: 400 }
     );
   }
-  console.log("User created:", user);
 
-  // TODO: create a new session in Firebase
-  // More steps I have no idea?
+  // create a custom token for the new user
+  const idToken = await firebaseApp.auth().createCustomToken(user.uid);
+  const oneWeek = 60 * 60 * 24 * 7 * 1000;
 
+  // create a new cookie in Firebase
+  const cookie = await firebaseApp.auth().createSessionCookie(idToken, {
+    expiresIn: oneWeek,
+  });
 
+  // set the session cookie in the response
+  cookies.set('session', cookie)
+  console.log('Redirecting to dashboard ...')
   return redirect('/dashboard', 301);
 
 }
