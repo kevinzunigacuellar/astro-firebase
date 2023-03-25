@@ -1,18 +1,14 @@
 import type { APIRoute } from "astro";
-import { userAndPasswordSchema } from "../../lib/schemas";
+import firebase from "../../lib/firebase/server";
 
-export const post: APIRoute = async ({ request, redirect }) => {
-  const formData = await request.formData();
-  const result = userAndPasswordSchema.safeParse(formData);
-
-  if (!result.success) {
-    return new Response(
-      JSON.stringify({
-        errors: result.error.flatten(),
-      }),
-      { status: 400 }
-    );
-  }
-
-  return redirect("/dashboard", 301);
+export const post: APIRoute = async ({ redirect, request, cookies }) => {
+  const { idToken } = await request.json();
+  const expiresIn = 60 * 60 * 24 * 5 * 1000;
+  const sessionCookie = await firebase
+    .auth()
+    .createSessionCookie(idToken, { expiresIn });
+  cookies.set("session", sessionCookie, {
+    path: "/",
+  });
+  return redirect("/dashboard", 302);
 };

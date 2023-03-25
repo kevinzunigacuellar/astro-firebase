@@ -2,7 +2,9 @@ import { Suspense, createSignal, createResource, Show } from "solid-js";
 import { userAndPasswordSchema } from "../lib/schemas";
 import type { z } from "zod";
 
-type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof userAndPasswordSchema>>;
+type Errors = z.typeToFlattenedError<
+  z.inferFormattedError<typeof userAndPasswordSchema>
+>;
 
 async function postFormData(formData: FormData) {
   const response = await fetch("/api/register", {

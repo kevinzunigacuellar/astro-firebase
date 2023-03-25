@@ -1,29 +1,20 @@
-import { Suspense, createSignal, createResource, Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { userAndPasswordSchema } from "../lib/schemas";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../lib/firebase/client";
 import type { z } from "zod";
 
-type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof userAndPasswordSchema>>;
-
-async function postFormData(formData: FormData) {
-  const response = await fetch("/api/login", {
-    method: "POST",
-    body: formData,
-  });
-  if (!response.ok) {
-    throw new Error("Something went wrong");
-  }
-  const data = await response.json();
-  return data;
-}
+type Errors = z.typeToFlattenedError<
+  z.inferFormattedError<typeof userAndPasswordSchema>
+>;
 
 export default function LoginForm() {
-  const [formData, setFormData] = createSignal<FormData>();
+  const [serverError, setServerError] = createSignal<string>();
   const [errors, setErrors] = createSignal<Errors>();
-  const [response] = createResource(formData, postFormData);
 
-  function submit(e: SubmitEvent) {
+  async function submit(e: SubmitEvent) {
     e.preventDefault();
-    setErrors(undefined);
+    setErrors();
     const data = new FormData(e.currentTarget as HTMLFormElement);
     const result = userAndPasswordSchema.safeParse(data);
 
@@ -33,7 +24,38 @@ export default function LoginForm() {
       setErrors(errors);
       return;
     }
-    setFormData(data);
+    const { email, password } = result.data;
+    let userCredential;
+    try {
+      userCredential = await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/user-not-found":
+          setServerError("No user found with that email");
+          break;
+        case "auth/wrong-password":
+          setServerError("Incorrect password");
+          break;
+        default:
+          setServerError("Something went wrong, please try again later");
+          break;
+      }
+      return;
+    }
+
+    const idToken = await userCredential.user.getIdToken();
+    const response = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (!response.ok) {
+      setServerError("Something went wrong, please try again later");
+    }
+
+    if (response.redirected) {
+      window.location.assign(response.url);
+    }
   }
 
   return (
@@ -90,11 +112,9 @@ export default function LoginForm() {
       >
         Sign in
       </button>
-      {/* We will use this suspense to return server errors:
-          - wrong password 
-          - email does not exist
-        */}
-      <Suspense>{<p class="text-white">{response()?.error}</p>}</Suspense>
+      <Show when={serverError()}>
+        <p class="text-red-500 text-sm">{serverError()}</p>
+      </Show>
     </form>
   );
 }
