@@ -1,10 +1,10 @@
 import ServerfirebaseApp from "../../lib/firebase/server";
 import type { APIRoute } from "astro";
-import { userAndPasswordSchema } from "../../lib/schemas";
+import { registerSchema } from "../../lib/schemas";
 
 export const post: APIRoute = async ({ request, redirect, cookies }) => {
   const formData = await request.formData();
-  const result = userAndPasswordSchema.safeParse(formData);
+  const result = registerSchema.safeParse(formData);
 
   // If the form data is invalid, return an error response
   if (!result.success) {
@@ -17,12 +17,13 @@ export const post: APIRoute = async ({ request, redirect, cookies }) => {
   }
 
   // create a new user in Firebase
-  const { email, password } = result.data;
+  const { email, password, name } = result.data;
 
   try {
     await ServerfirebaseApp.auth().createUser({
       email,
       password,
+      displayName: name,
     });
   } catch (error: any) {
     return new Response(

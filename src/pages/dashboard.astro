@@ -1,10 +1,30 @@
 ---
 import Layout from "../layouts/Layout.astro";
-console.log("The cookie is", Astro.cookies.get("session"));
+import firebaseServer from "../lib/firebase/server";
+import LogoutButton from "../components/SignoutButton";
+
+const sessionCookie = Astro.cookies.get("session").value;
+
+if (!sessionCookie) {
+  return Astro.redirect("/login");
+}
+
+const decodedClaims = await firebaseServer
+  .auth()
+  .verifySessionCookie(sessionCookie, true);
+const user = await firebaseServer.auth().getUser(decodedClaims.uid);
+
+if (!user) {
+  return Astro.redirect("/login");
+}
 ---
 
 <Layout title="Dashboard">
-  <main class="w-full h-full flex flex-col items-center justify-center">
+  <main class="w-full h-full flex flex-col items-center justify-center gap-2">
     <p class="text-3xl text-zinc-300 font-semibold">We are in the dashboard</p>
+    <p class="text-lg text-zinc-300">
+      Great to have you here, {user.displayName}
+    </p>
+    <LogoutButton client:idle />
   </main>
 </Layout>

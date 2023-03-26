@@ -1,12 +1,12 @@
 import { createSignal, Show } from "solid-js";
-import { userAndPasswordSchema } from "../lib/schemas";
+import { loginSchema } from "../lib/schemas";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebase/client";
+import ErrorPlaceholder from "./ErrorPlaceholder";
+import Error from "./Error";
 import type { z } from "zod";
 
-type Errors = z.typeToFlattenedError<
-  z.inferFormattedError<typeof userAndPasswordSchema>
->;
+type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof loginSchema>>;
 
 export default function LoginForm() {
   const [serverError, setServerError] = createSignal<string>();
@@ -16,7 +16,7 @@ export default function LoginForm() {
     e.preventDefault();
     setErrors();
     const data = new FormData(e.currentTarget as HTMLFormElement);
-    const result = userAndPasswordSchema.safeParse(data);
+    const result = loginSchema.safeParse(data);
 
     // if there are errors, set them and return
     if (!result.success) {
@@ -72,15 +72,9 @@ export default function LoginForm() {
         />
         <Show
           when={errors()?.fieldErrors.email}
-          fallback={
-            <p class="-mt-1 text-sm text-red-500 invisible">
-              Your email just boom
-            </p>
-          }
+          fallback={<ErrorPlaceholder />}
         >
-          <p class="-mt-1 text-sm text-red-500">
-            {errors()?.fieldErrors.email}
-          </p>
+          <Error message={errors()?.fieldErrors.email} />
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
@@ -95,15 +89,9 @@ export default function LoginForm() {
         />
         <Show
           when={errors()?.fieldErrors.password}
-          fallback={
-            <p class="-mt-1 text-sm text-red-500 invisible">
-              Your password just boom
-            </p>
-          }
+          fallback={<ErrorPlaceholder />}
         >
-          <p class="-mt-1 text-sm text-red-500">
-            {errors()?.fieldErrors.password}
-          </p>
+          <Error message={errors()?.fieldErrors.password} />
         </Show>
       </div>
       <button
