@@ -3,36 +3,31 @@ import firebase from "../../lib/firebase/server";
 
 export const post: APIRoute = async ({ redirect, request, cookies }) => {
   /* Get the ID token */
-  const { idToken } = await request.json().catch((error) => {
-    return new Response(
-      JSON.stringify({
-        message: error.message,
-      }),
-      { status: 401 }
-    );
-  });
-
   /* Verify the ID token */
-  await firebase.auth().verifyIdToken(idToken).catch((error) => {
+  let sessionCookie;
+  try {
+    const { idToken } = await request.json();
+    await firebase.auth().verifyIdToken(idToken);
+    const fiveDays = 60 * 60 * 24 * 5 * 1000;
+    sessionCookie = await firebase
+      .auth()
+      .createSessionCookie(idToken, { expiresIn: fiveDays })
+      .catch((error) => {
+        return new Response(
+          JSON.stringify({
+            message: error.message,
+          }),
+          { status: 401 }
+        );
+      });
+  } catch (error: any) {
     return new Response(
       JSON.stringify({
-        message: error.message,
+        error: "The server is on fire",
       }),
       { status: 401 }
     );
-  })
-
-  const fiveDays = 60 * 60 * 24 * 5 * 1000;
-  const sessionCookie = await firebase
-    .auth()
-    .createSessionCookie(idToken, { expiresIn: fiveDays }).catch((error) => {
-      return new Response(
-        JSON.stringify({
-          message: error.message,
-        }),
-        { status: 401 }
-      );
-    });
+  }
 
   cookies.set("session", sessionCookie, {
     path: "/",

@@ -1,4 +1,11 @@
-import { createSignal, Show, createResource, Suspense, Switch, Match } from "solid-js";
+import {
+  createSignal,
+  Show,
+  createResource,
+  Suspense,
+  Switch,
+  Match,
+} from "solid-js";
 import { loginSchema } from "../lib/schemas";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebase/client";
@@ -21,6 +28,12 @@ async function postFormData(formData: SucessForm) {
     method: "POST",
     body: JSON.stringify({ idToken }),
   });
+
+  if (!res.ok) {
+    const data = await res.json();
+    return data;
+  }
+
   if (res.redirected) {
     window.location.assign(res.url);
   }
@@ -99,10 +112,10 @@ export default function LoginForm() {
             <Error message="You don't have an account with this email" />
           </Match>
           {/* Fallback error */}
-          <Match when={response.error}>
-            <Error message="The server kaboomed" />
+          <Match when={response()?.error}>
+            <Error message={response().error} />
           </Match>
-          </Switch>
+        </Switch>
       </Suspense>
     </form>
   );
