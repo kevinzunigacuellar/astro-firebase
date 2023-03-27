@@ -6,7 +6,7 @@ export const post: APIRoute = async ({ redirect, request, cookies }) => {
   try {
     /* Get the ID token */
     const { idToken } = await request.json();
-    
+
     /* Verify the ID token */
     await firebase.auth().verifyIdToken(idToken);
     const fiveDays = 60 * 60 * 24 * 5 * 1000;
