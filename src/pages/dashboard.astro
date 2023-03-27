@@ -3,20 +3,26 @@ import Layout from "../layouts/Layout.astro";
 import firebaseServer from "../lib/firebase/server";
 import LogoutButton from "../components/SignoutButton";
 
+/* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
-
 if (!sessionCookie) {
   return Astro.redirect("/login");
 }
 
+/* Verify cookie. */
 const decodedClaims = await firebaseServer
   .auth()
-  .verifySessionCookie(sessionCookie, true);
-const user = await firebaseServer.auth().getUser(decodedClaims.uid);
+  .verifySessionCookie(sessionCookie, true)
+if (!decodedClaims) {
+  return Astro.redirect("/login");
+}
 
+/* Get user data */
+const user = await firebaseServer.auth().getUser(decodedClaims.uid);
 if (!user) {
   return Astro.redirect("/login");
 }
+
 ---
 
 <Layout title="Dashboard">
