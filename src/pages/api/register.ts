@@ -6,7 +6,7 @@ export const post: APIRoute = async ({ request, redirect }) => {
   const formData = await request.formData();
   const result = registerSchema.safeParse(formData);
 
-  // If the form data is invalid, return an error response
+  /* Validate the data */
   if (!result.success) {
     return new Response(
       JSON.stringify({
@@ -16,7 +16,7 @@ export const post: APIRoute = async ({ request, redirect }) => {
     );
   }
 
-  // create a new user in Firebase
+  /* Create the user */
   const { email, password, name } = result.data;
 
   try {

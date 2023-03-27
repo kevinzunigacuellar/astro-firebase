@@ -2,11 +2,12 @@ import type { APIRoute } from "astro";
 import firebase from "../../lib/firebase/server";
 
 export const post: APIRoute = async ({ redirect, request, cookies }) => {
-  /* Get the ID token */
-  /* Verify the ID token */
   let sessionCookie;
   try {
+    /* Get the ID token */
     const { idToken } = await request.json();
+    
+    /* Verify the ID token */
     await firebase.auth().verifyIdToken(idToken);
     const fiveDays = 60 * 60 * 24 * 5 * 1000;
     sessionCookie = await firebase
