@@ -1,6 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LoginForm from "../components/LoginForm";
+import firebaseServer from "../lib/firebase/server";
+
+/* Get session cookie */
+const sessionCookie = Astro.cookies.get("session").value;
+if (!sessionCookie) {
+  return Astro.redirect("/login");
+}
+
+const session = await firebaseServer
+  .auth()
+  .verifySessionCookie(sessionCookie, true).catch((error) => {
+    return undefined
+  });
+
+if (session) {
+  return Astro.redirect("/dashboard");
+}
 ---
 
 <Layout title="Sign in">
