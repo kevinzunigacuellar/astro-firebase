@@ -9,20 +9,16 @@ if (!sessionCookie) {
   return Astro.redirect("/login");
 }
 
-/* Verify cookie. */
-const decodedClaims = await firebaseServer
+/* Verify session cookie and get user */
+let user;
+try {
+  const decodedClaims = await firebaseServer
   .auth()
-  .verifySessionCookie(sessionCookie, true)
-if (!decodedClaims) {
+  .verifySessionCookie(sessionCookie, true);
+  user = await firebaseServer.auth().getUser(decodedClaims.uid);
+} catch (error) {
   return Astro.redirect("/login");
 }
-
-/* Get user data */
-const user = await firebaseServer.auth().getUser(decodedClaims.uid);
-if (!user) {
-  return Astro.redirect("/login");
-}
-
 ---
 
 <Layout title="Dashboard">
