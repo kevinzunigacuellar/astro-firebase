@@ -35,6 +35,8 @@ export default function SignupForm() {
     });
 
     if (!response.ok) {
+      // I think this could be a solidjs createResource so that we don't have to
+      // handle errors in two places
       const { errors } = await response.json();
       setServerError(errors);
     }
@@ -57,7 +59,7 @@ export default function SignupForm() {
           class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
         />
         <Show when={errors()?.fieldErrors.name} fallback={<ErrorPlaceholder />}>
-          <p class="-mt-1 text-sm text-red-500">{errors()?.fieldErrors.name}</p>
+          <Error message={errors()?.fieldErrors.name} />
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
