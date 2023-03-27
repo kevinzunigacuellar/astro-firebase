@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, Show, createResource, Suspense, Switch, Match } from "solid-js";
 import { loginSchema } from "../lib/schemas";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebase/client";
@@ -7,55 +7,42 @@ import Error from "./Error";
 import type { z } from "zod";
 
 type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof loginSchema>>;
+type SucessForm = z.infer<typeof loginSchema>;
+
+async function postFormData(formData: SucessForm) {
+  const { email, password } = formData;
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  const idToken = await userCredential.user.getIdToken();
+  const res = await fetch("/api/login", {
+    method: "POST",
+    body: JSON.stringify({ idToken }),
+  });
+  if (res.redirected) {
+    window.location.assign(res.url);
+  }
+}
 
 export default function LoginForm() {
-  const [serverError, setServerError] = createSignal<string>();
-  const [errors, setErrors] = createSignal<Errors>();
+  const [formData, setFormData] = createSignal<SucessForm>();
+  const [response] = createResource(formData, postFormData);
+  const [clientErrors, setClientErrors] = createSignal<Errors>();
 
   async function submit(e: SubmitEvent) {
     e.preventDefault();
-    setErrors();
+    setClientErrors();
     const data = new FormData(e.currentTarget as HTMLFormElement);
     const result = loginSchema.safeParse(data);
 
-    // if there are errors, set them and return
     if (!result.success) {
       const errors = result.error.flatten() as Errors;
-      setErrors(errors);
+      setClientErrors(errors);
       return;
     }
-    const { email, password } = result.data;
-    let userCredential;
-    try {
-      userCredential = await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-      switch (error.code) {
-        case "auth/user-not-found":
-          setServerError("No user found with that email");
-          break;
-        case "auth/wrong-password":
-          setServerError("Incorrect password");
-          break;
-        default:
-          setServerError("Something went wrong, please try again later");
-          break;
-      }
-      return;
-    }
-
-    const idToken = await userCredential.user.getIdToken();
-    const response = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({ idToken }),
-    });
-
-    if (!response.ok) {
-      setServerError("Something went wrong, please try again later");
-    }
-
-    if (response.redirected) {
-      window.location.assign(response.url);
-    }
+    setFormData(result.data);
   }
 
   return (
@@ -71,10 +58,10 @@ export default function LoginForm() {
           class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
         />
         <Show
-          when={errors()?.fieldErrors.email}
+          when={clientErrors()?.fieldErrors.email}
           fallback={<ErrorPlaceholder />}
         >
-          <Error message={errors()?.fieldErrors.email} />
+          <Error message={clientErrors()?.fieldErrors.email} />
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
@@ -88,21 +75,35 @@ export default function LoginForm() {
           class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
         />
         <Show
-          when={errors()?.fieldErrors.password}
+          when={clientErrors()?.fieldErrors.password}
           fallback={<ErrorPlaceholder />}
         >
-          <Error message={errors()?.fieldErrors.password} />
+          <Error message={clientErrors()?.fieldErrors.password} />
         </Show>
       </div>
       <button
-        class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900"
+        class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
         type="submit"
+        disabled={response.loading}
       >
-        Sign in
+        <Show fallback="Sign in" when={response.loading}>
+          Signing in...
+        </Show>
       </button>
-      <Show when={serverError()}>
-        <p class="text-red-500 text-sm">{serverError()}</p>
-      </Show>
+      <Suspense>
+        <Switch>
+          <Match when={response.error?.code === "auth/wrong-password"}>
+            <Error message="Your password is incorrect" />
+          </Match>
+          <Match when={response.error?.code === "auth/user-not-found"}>
+            <Error message="You don't have an account with this email" />
+          </Match>
+          {/* Fallback error */}
+          <Match when={response.error}>
+            <Error message="The server kaboomed" />
+          </Match>
+          </Switch>
+      </Suspense>
     </form>
   );
 }
