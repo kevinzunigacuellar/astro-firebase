@@ -2,7 +2,7 @@ import ServerfirebaseApp from "../../lib/firebase/server";
 import type { APIRoute } from "astro";
 import { registerSchema } from "../../lib/schemas";
 
-export const post: APIRoute = async ({ request, redirect, cookies }) => {
+export const post: APIRoute = async ({ request, redirect }) => {
   const formData = await request.formData();
   const result = registerSchema.safeParse(formData);
 
