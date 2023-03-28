@@ -131,7 +131,7 @@ export default function SignupForm() {
       <Suspense>
         <Switch>
           <Match when={response()?.error === "auth/email-already-exists"}>
-            <Error message="The email address is already in use by another account." />
+            <Error message="The email address is already in use by another account" />
           </Match>
           <Match when={response()?.error}>
             <Error message={response().error} />

@@ -6,7 +6,9 @@ export default function SignoutButton() {
     if (!response.ok) {
       throw new Error("Something went wrong");
     }
-    window.location.assign("/");
+    if (response.redirected) {
+      window.location.assign(response.url);
+    }
   }
 
   return (
