@@ -1,13 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LoginForm from "../components/LoginForm";
-import firebaseServer from "../lib/firebase/server";
+import { auth } from "../lib/firebase/server";
 
 /* Get session cookie */
-const sessionCookie = Astro.cookies.get("session").value
+const sessionCookie = Astro.cookies.get("session").value;
 if (sessionCookie) {
-  const session = await firebaseServer
-    .auth()
+  const session = await auth
     .verifySessionCookie(sessionCookie, true)
     .catch((error) => {
       return undefined;

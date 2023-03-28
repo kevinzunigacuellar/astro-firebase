@@ -7,8 +7,8 @@ import {
   Match,
 } from "solid-js";
 import { loginSchema } from "../lib/schemas";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../lib/firebase/client";
+import { signInWithEmailAndPassword, inMemoryPersistence, getAuth } from "firebase/auth";
+import { app } from "../lib/firebase/client";
 import ErrorPlaceholder from "./ErrorPlaceholder";
 import Error from "./Error";
 import type { z } from "zod";
@@ -18,11 +18,14 @@ type SucessForm = z.infer<typeof loginSchema>;
 
 async function postFormData(formData: SucessForm) {
   const { email, password } = formData;
-  const userCredential = await signInWithEmailAndPassword(
+  const auth = getAuth(app)
+  
+  /* This will set the persistence to browser session */
+  const userCredential = await auth.setPersistence(inMemoryPersistence).then(() => signInWithEmailAndPassword(
     auth,
     email,
     password
-  );
+  ))
   const idToken = await userCredential.user.getIdToken();
   const res = await fetch("/api/login", {
     method: "POST",
