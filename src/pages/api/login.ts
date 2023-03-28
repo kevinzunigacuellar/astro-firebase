@@ -1,12 +1,20 @@
 import type { APIRoute } from "astro";
 import { auth } from "../../lib/firebase/server";
 
-export const post: APIRoute = async ({ redirect, request, cookies }) => {
+export const get: APIRoute = async ({ redirect, request, cookies }) => {
+  /* Get the ID token from header */
+  const idToken = request.headers.get("Authorization")?.split("Bearer ")[1];
+  if (!idToken) {
+    return new Response(
+      JSON.stringify({
+        error: "No token found",
+      }),
+      { status: 401 }
+    );
+  }
+
   let sessionCookie;
   try {
-    /* Get the ID token */
-    const { idToken } = await request.json();
-
     /* Verify the ID token */
     await auth.verifyIdToken(idToken);
     const fiveDays = 60 * 60 * 24 * 5 * 1000;
