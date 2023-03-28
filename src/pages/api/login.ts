@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import firebase from "../../lib/firebase/server";
+import { auth } from "../../lib/firebase/server";
 
 export const post: APIRoute = async ({ redirect, request, cookies }) => {
   let sessionCookie;
@@ -8,10 +8,9 @@ export const post: APIRoute = async ({ redirect, request, cookies }) => {
     const { idToken } = await request.json();
 
     /* Verify the ID token */
-    await firebase.auth().verifyIdToken(idToken);
+    await auth.verifyIdToken(idToken);
     const fiveDays = 60 * 60 * 24 * 5 * 1000;
-    sessionCookie = await firebase
-      .auth()
+    sessionCookie = await auth
       .createSessionCookie(idToken, { expiresIn: fiveDays })
       .catch((error) => {
         return new Response(

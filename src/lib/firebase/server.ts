@@ -1,4 +1,5 @@
 import admin from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
 
 const serviceAccount = {
   type: "service_account",
@@ -19,4 +20,4 @@ export const app = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
 });
 
-export default app;
+export const auth = getAuth(app);
