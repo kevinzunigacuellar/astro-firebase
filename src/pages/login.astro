@@ -4,16 +4,18 @@ import LoginForm from "../components/LoginForm";
 import firebaseServer from "../lib/firebase/server";
 
 /* Get session cookie */
-const sessionCookie = Astro.cookies.get("session").value || "";
-const session = await firebaseServer
-  .auth()
-  .verifySessionCookie(sessionCookie, true)
-  .catch((error) => {
-    return undefined;
-  });
+const sessionCookie = Astro.cookies.get("session").value
+if (sessionCookie) {
+  const session = await firebaseServer
+    .auth()
+    .verifySessionCookie(sessionCookie, true)
+    .catch((error) => {
+      return undefined;
+    });
 
-if (session) {
-  return Astro.redirect("/dashboard");
+  if (session) {
+    return Astro.redirect("/dashboard");
+  }
 }
 ---
 
