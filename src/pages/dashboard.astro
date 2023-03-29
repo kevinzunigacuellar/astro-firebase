@@ -1,7 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { auth } from "../lib/firebase/server";
+import { auth, firestore } from "../lib/firebase/server";
 import LogoutButton from "../components/SignoutButton";
+import BirthdayList from "../components/BirthdayList";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
@@ -17,6 +18,14 @@ try {
 } catch (error) {
   return Astro.redirect("/login");
 }
+
+/* get birthdates from firestore */
+const querySnashot = await firestore
+  .collection("birthdays")
+  .where("authorId", "==", user.uid)
+  .get();
+
+const birthdays = querySnashot.docs.map((doc) => doc.data());
 ---
 
 <Layout title="Dashboard">
@@ -26,5 +35,6 @@ try {
       Great to have you here, {user.displayName}
     </p>
     <LogoutButton client:idle />
+    <BirthdayList birthdays={birthdays} />
   </main>
 </Layout>

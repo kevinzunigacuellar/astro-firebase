@@ -1,5 +1,6 @@
 import admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 
 const serviceAccount = {
   type: "service_account",
@@ -21,3 +22,4 @@ export const app = admin.initializeApp({
 });
 
 export const auth = getAuth(app);
+export const firestore = getFirestore(app);
