@@ -123,6 +123,7 @@ export default function SignupForm() {
       <button
         class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900"
         type="submit"
+        disabled={response.loading}
       >
         <Show fallback="Sign up" when={response.loading}>
           Signing up...
