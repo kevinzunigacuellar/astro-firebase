@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import { auth, firestore } from "../lib/firebase/server";
 import BirthdayList from "../components/BirthdayList";
 import type { BirthdayType } from "../lib/types";
+import SignoutButton from "../components/SignoutButton";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
@@ -30,7 +31,11 @@ const birthdays = querySnashot.docs.map((doc) => doc.data()) as BirthdayType[];
 ---
 
 <Layout title="Dashboard">
+  <nav class="py-2 px-2 flex flex-row-reverse">
+    <SignoutButton client:idle />
+  </nav>
   <main class="w-full h-full flex flex-col items-center justify-center gap-2">
+    <h1 class="text-3xl text-zinc-300 font-semibold">Incoming Birthdays 🎁</h1>
     <BirthdayList birthdays={birthdays} client:idle />
   </main>
 </Layout>
