@@ -10,9 +10,12 @@ const userPasswordSchema = z.object({
 
 const birthdaySchema = z.object({
   name: zfd.text(z.string().min(2, "Name must be at least 2 character long")),
-  affiliation: zfd
-    .text(z.string().min(1, "Affiliation must be at least 1 character long"))
-    .optional(),
+  affiliation: zfd.text(
+    z
+      .string()
+      .min(1, "Affiliation must be at least 1 character long")
+      .optional()
+  ),
   month: zfd.numeric(
     z.number().min(1, "Month must be between 1 and 12").max(12)
   ),

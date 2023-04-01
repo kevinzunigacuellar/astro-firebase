@@ -36,7 +36,7 @@ export const post: APIRoute = async ({ request, cookies, redirect }) => {
       month,
       year: year ?? 0,
     },
-    affiliation,
+    affiliation: affiliation ? affiliation.toLowerCase() : "",
     authorId: uid,
   });
 
