@@ -29,9 +29,9 @@ export default function BirthdayList({
 function BirthdayCard({ birthday }: { birthday: BirthdayCardProps }) {
   return (
     <li class="bg-zinc-800 rounded-md border border-zinc-700 p-4 flex justify-between items-center">
-      <div class="">
+      <div>
         <p class="font-medium flex items-center gap-2">
-          <span class="text-white text-lg">{birthday.name}</span>
+          <a href={`/edit/${birthday.documentId}`} class="text-white text-lg">{birthday.name}</a>
           <span class="bg-teal-800 text-teal-100 text-xs px-2 py-0.5 rounded uppercase inline-block">
             {birthday.affiliation}
           </span>

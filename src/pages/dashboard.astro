@@ -27,7 +27,9 @@ const querySnashot = await firestore
   .where("authorId", "==", user.uid)
   .get();
 
-const documents = querySnashot.docs.map((doc) => doc.data()) as BirthdayType[];
+const documents = querySnashot.docs.map((doc) => {
+  return { documentId: doc.id, ...doc.data() };
+}) as BirthdayType[];
 
 /* compute difference in days and sort */
 const birthdays = documents

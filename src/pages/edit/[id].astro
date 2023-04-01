@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { auth, firestore } from "../../lib/firebase/server";
+
+/* Get session cookie */
+const sessionCookie = Astro.cookies.get("session").value;
+if (!sessionCookie) {
+  return Astro.redirect("/login");
+}
+
+/* Verify session cookie and get user */
+let user;
+try {
+  const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
+  user = await auth.getUser(decodedClaims.uid);
+} catch (error) {
+  return Astro.redirect("/login");
+}
+
+/* Get user data */
+const birthdayId = Astro.params.id;
+
+if (!birthdayId) {
+  return Astro.redirect("/dashboard");
+}
+
+/* get document data */
+const birthdayInfo = await firestore.collection("birthdays").doc(birthdayId).get();
+---
+<pre>
+  {JSON.stringify(birthdayInfo.data(), null, 2)}
+</pre>

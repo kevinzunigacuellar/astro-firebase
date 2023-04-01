@@ -6,4 +6,5 @@ export interface BirthdayType {
     year: number;
   };
   affiliation: string;
+  documentId: string;
 }
