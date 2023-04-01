@@ -4,6 +4,7 @@ import { auth, firestore } from "../lib/firebase/server";
 import BirthdayList from "../components/BirthdayList";
 import type { BirthdayType } from "../lib/types";
 import SignoutButton from "../components/SignoutButton";
+import { differenceInCalendarDays } from "date-fns";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
@@ -26,19 +27,54 @@ const querySnashot = await firestore
   .where("authorId", "==", user.uid)
   .get();
 
-/* fetch data from firestore */
-const birthdays = querySnashot.docs.map((doc) => doc.data()) as BirthdayType[];
+const documents = querySnashot.docs.map((doc) => doc.data()) as BirthdayType[];
+
+/* compute difference in days and sort */
+const birthdays = documents
+  .map((birthday) => {
+    const today = new Date();
+    const date = new Date(
+      `${today.getFullYear()}-${birthday.date.month}-${birthday.date.day}`
+    );
+    const difference = differenceInCalendarDays(date, today);
+    const differenceInDays = difference < 0 ? 365 + difference : difference;
+    return { ...birthday, difference: differenceInDays };
+  })
+  .sort((a, b) => a.difference - b.difference);
 ---
 
 <Layout title="Dashboard">
   <nav class="bg-zinc-950 border-b border-zinc-800">
     <div class="p-4 flex justify-between items-center max-w-4xl mx-auto">
-    <span class="text-lg font-semibold text-zinc-100">Birthday Tracker</span>
-    <SignoutButton client:idle />
-  </div>
+      <span class="text-lg font-semibold text-zinc-100">Birthday Tracker</span>
+      <SignoutButton client:idle />
+    </div>
   </nav>
   <main class="w-full grow flex flex-col items-center justify-center gap-2 p-4">
-    <h1 class="text-3xl text-zinc-300 font-semibold">Incoming Birthdays 🎁</h1>
-    <BirthdayList birthdays={birthdays} client:idle />
+    <h1 class="text-3xl text-zinc-300 font-semibold my-6">
+      Incoming Birthdays 🎈
+    </h1>
+    <ul class="w-full grid grid-cols-1 gap-6 max-w-xl">
+      <a
+        href="/add"
+        class="bg-teal-950 border border-teal-900 p-4 rounded-md flex justify-between items-center text-teal-500"
+      >
+        <span class="font-semibold">Add a new birthday</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"></path>
+        </svg>
+      </a>
+      <BirthdayList birthdays={birthdays} client:idle />
+    </ul>
   </main>
 </Layout>

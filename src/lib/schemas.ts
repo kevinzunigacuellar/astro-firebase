@@ -8,6 +8,20 @@ const userPasswordSchema = z.object({
   ),
 });
 
+const birthdaySchema = z.object({
+  name: zfd.text(z.string().min(2, "Name must be at least 2 character long")),
+  affiliation: zfd
+    .text(z.string().min(1, "Affiliation must be at least 1 character long"))
+    .optional(),
+  month: zfd.numeric(
+    z.number().min(1, "Month must be between 1 and 12").max(12)
+  ),
+  day: zfd.numeric(z.number().min(1).max(31)),
+  year: zfd.numeric(
+    z.number().min(1900, "Year must be between 1900 and 2021").optional()
+  ),
+});
+
 const register = userPasswordSchema
   .extend({
     name: zfd.text(z.string().min(2, "Name must be at least 2 character long")),
@@ -22,3 +36,4 @@ const register = userPasswordSchema
 
 export const loginSchema = zfd.formData(userPasswordSchema);
 export const registerSchema = zfd.formData(register);
+export const createBirthdaySchema = zfd.formData(birthdaySchema);

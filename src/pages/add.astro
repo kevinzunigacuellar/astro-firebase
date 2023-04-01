@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { auth } from "../lib/firebase/server";
+import CreateRecord from "../components/CreateRecord";
+
+/* Get session cookie */
+const sessionCookie = Astro.cookies.get("session").value;
+if (!sessionCookie) {
+  return Astro.redirect("/login");
+}
+
+/* Verify session cookie and get user */
+let user;
+try {
+  const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
+  user = await auth.getUser(decodedClaims.uid);
+} catch (error) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title="Sign in">
+  <main class="w-full h-full flex flex-col items-center justify-center p-4">
+    <section class="w-full max-w-md">
+      <h1 class="font-semibold text-2xl text-white w-full mb-8">
+        Add a new user
+      </h1>
+      <CreateRecord client:load />
+    </section>
+  </main>
+</Layout>

@@ -3,6 +3,7 @@ export interface BirthdayType {
   date: {
     day: number;
     month: number;
+    year: number;
   };
   affiliation: string;
 }
