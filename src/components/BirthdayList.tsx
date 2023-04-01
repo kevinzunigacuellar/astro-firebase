@@ -1,5 +1,4 @@
-import { For, Show } from "solid-js";
-import { createStore } from "solid-js/store";
+import { For, Show, batch, createSignal } from "solid-js";
 import type { BirthdayType } from "../lib/types";
 import { format } from "date-fns";
 
@@ -15,11 +14,35 @@ export default function BirthdayList({
 }: {
   birthdays: BirthdayCardProps[];
 }) {
-  const [birthdayCards, setBirthdayCards] = createStore(birthdays);
+  const filters = ["all", ...new Set(birthdays.map(item => item.affiliation))]
+  const [birthdayCards, setBirthdayCards] = createSignal(birthdays);
+  const [currentfilter, setCurrentFilter] = createSignal("all");
+
+  function filterHandler(filter: string) {
+    if (filter === "all") {
+      batch(() => {
+        setCurrentFilter("all");
+        setBirthdayCards(birthdays);
+      })
+    } else {
+      batch(() => {
+      setCurrentFilter(filter);
+      setBirthdayCards(birthdays.filter(birthday => birthday.affiliation === filter));
+      })
+    }
+  }
 
   return (
     <>
-      <For each={birthdayCards}>
+      <div class="flex gap-3">
+        <For each={filters}>
+          {(filter) => (<button class="px-4 py-1 rounded-md capitalize" classList={
+            { "bg-zinc-100": filter === currentfilter(),
+              "bg-zinc-700 text-zinc-300": filter !== currentfilter() }
+          } onClick={() => filterHandler(filter)}>{filter}</button>)}
+        </For>
+      </div>
+      <For each={birthdayCards()}>
         {(birthday) => <BirthdayCard birthday={birthday} />}
       </For>
     </>
