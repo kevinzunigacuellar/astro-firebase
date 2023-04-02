@@ -1,47 +1,46 @@
-# Astro Starter Kit: Minimal
+# Astro Firebase example
 
+This is a simple example of how to use Astro SSR with Firebase. 
+
+## Description
+
+This is a birthday reminder app that allows you to store your friends birthdays and shows how many days are left until their birthday.
+
+## Firebase services used
+
+- Firestore
+- Firebase Authentication
+
+## Stack
+
+- [Astro](https://astro.build)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Firebase](https://firebase.google.com)
+- [Solid.js](https://solidjs.com)
+
+## Prerequisites
+
+To run this example you need a Firebase project. You can create one from the [Firebase console](https://console.firebase.google.com/).
+
+Because this app is server side rendered (SSR), it requires both Admin SDK and Client SDK credentials.
+
+- You can get your client credentials from the Firebase project settings under the "General" tab.
+- You can get your admin credentials from the Firebase project settings under the "Service accounts" tab.
+
+Update your client credentials in `src/lib/firebase/client` and your admin credentials in `src/lib/firebase/server` and `.env` with your own.
+
+## Getting started
+
+Install the dependencies
+
+```bash
+pnpm install
 ```
-npm create astro@latest -- --template minimal
+
+To start the dev server
+
+```bash
+pnpm dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+> This app uses the Vercel adapter for Astro. If you would like to use a different adapter, you can install it and update the `astro.config.mjs` file.
