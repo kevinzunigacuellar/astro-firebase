@@ -8,13 +8,34 @@ interface BirthdayCardProps extends BirthdayType {
 
 const today = new Date();
 const currentYear = today.getFullYear();
+const colorFilterMapping = new Map<string, string>();
+const colorPallete = [
+  "bg-indigo-800 text-indigo-200",
+  "bg-blue-800 text-blue-200",
+  "bg-green-800 text-green-200",
+  "bg-yellow-800 text-yellow-200",
+  "bg-purple-800 text-purple-200",
+];
 
 export default function BirthdayList({
   birthdays,
 }: {
   birthdays: BirthdayCardProps[];
 }) {
-  const filters = ["all", ...new Set(birthdays.map(item => item.affiliation))]
+  /* create a list of filters */
+  const filters = [
+    "all",
+    ...new Set(birthdays.map((item) => item.affiliation)),
+  ];
+  
+  /* set a color for each filter */
+  filters.forEach((filter, idx) => {
+    colorFilterMapping.set(
+      filter,
+      colorPallete[idx > colorPallete.length ? idx % colorPallete.length : idx]
+    );
+  });
+
   const [birthdayCards, setBirthdayCards] = createSignal(birthdays);
   const [currentfilter, setCurrentFilter] = createSignal("all");
 
@@ -23,12 +44,14 @@ export default function BirthdayList({
       batch(() => {
         setCurrentFilter("all");
         setBirthdayCards(birthdays);
-      })
+      });
     } else {
       batch(() => {
-      setCurrentFilter(filter);
-      setBirthdayCards(birthdays.filter(birthday => birthday.affiliation === filter));
-      })
+        setCurrentFilter(filter);
+        setBirthdayCards(
+          birthdays.filter((birthday) => birthday.affiliation === filter)
+        );
+      });
     }
   }
 
@@ -36,10 +59,19 @@ export default function BirthdayList({
     <>
       <div class="flex gap-3">
         <For each={filters}>
-          {(filter) => (<button class="px-4 py-1 rounded-md capitalize" classList={
-            { "bg-zinc-100": filter === currentfilter(),
-              "bg-zinc-700 text-zinc-300": filter !== currentfilter() }
-          } onClick={() => filterHandler(filter)}>{filter}</button>)}
+          {(filter) => (
+            <button
+              class="px-4 py-1 rounded-md capitalize"
+              classList={{
+                "bg-zinc-100": filter === currentfilter(),
+                "bg-zinc-700 text-zinc-200 hover:bg-zinc-600":
+                  filter !== currentfilter(),
+              }}
+              onClick={() => filterHandler(filter)}
+            >
+              {filter}
+            </button>
+          )}
         </For>
       </div>
       <For each={birthdayCards()}>
@@ -54,8 +86,14 @@ function BirthdayCard({ birthday }: { birthday: BirthdayCardProps }) {
     <li class="bg-zinc-800 rounded-md border border-zinc-700 p-4 flex justify-between items-center">
       <div>
         <p class="font-medium flex items-center gap-2">
-          <a href={`/edit/${birthday.documentId}`} class="text-white text-lg">{birthday.name}</a>
-          <span class="bg-teal-800 text-teal-100 text-xs px-2 py-0.5 rounded uppercase inline-block">
+          <a href={`/edit/${birthday.documentId}`} class="text-white text-lg">
+            {birthday.name}
+          </a>
+          <span
+            class={`${colorFilterMapping.get(
+              birthday.affiliation
+            )} text-xs px-2 py-0.5 rounded uppercase inline-block`}
+          >
             {birthday.affiliation}
           </span>
         </p>
