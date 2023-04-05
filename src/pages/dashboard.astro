@@ -1,9 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { auth, firestore } from "../lib/firebase/server";
 import BirthdayList from "../components/BirthdayList";
-import type { BirthdayType } from "../lib/types";
 import SignoutButton from "../components/SignoutButton";
+import { auth, firestore } from "../lib/firebase/server";
+import type { BirthdayType } from "../lib/types";
 import { differenceInCalendarDays } from "date-fns";
 
 /* Get session cookie */
