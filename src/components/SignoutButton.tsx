@@ -1,8 +1,6 @@
 export default function SignoutButton() {
   async function signout() {
-    const response = await fetch("/api/logout", {
-      method: "POST",
-    });
+    const response = await fetch("/api/logout");
     if (!response.ok) {
       throw new Error("Something went wrong");
     }
