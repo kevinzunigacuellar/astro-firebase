@@ -25,8 +25,12 @@ if (!birthdayId) {
 }
 
 /* get document data */
-const birthdayInfo = await firestore.collection("birthdays").doc(birthdayId).get();
+const birthdayInfo = await firestore
+  .collection("birthdays")
+  .doc(birthdayId)
+  .get();
 ---
+
 <pre>
   {JSON.stringify(birthdayInfo.data(), null, 2)}
 </pre>
