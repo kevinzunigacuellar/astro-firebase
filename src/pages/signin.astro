@@ -1,19 +1,14 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import LoginForm from "@components/LoginForm";
-import { auth } from "@lib/firebase/server";
+import { getUser } from "@lib/utils";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
 if (sessionCookie) {
-  const session = await auth
-    .verifySessionCookie(sessionCookie, true)
-    .catch(() => {
-      return undefined;
-    });
-
-  if (session) {
-    return Astro.redirect("/dashboard");
+  const user = await getUser(sessionCookie);
+  if (user) {
+    Astro.redirect("/dashboard");
   }
 }
 ---

@@ -2,23 +2,21 @@
 import Layout from "@layouts/Layout.astro";
 import BirthdayList from "@components/BirthdayList";
 import SignoutButton from "@components/SignoutButton";
-import { auth, firestore } from "@lib/firebase/server";
+import { firestore } from "@lib/firebase/server";
 import type { BirthdayTypeWithId } from "@lib/types";
 import { differenceInCalendarDays } from "date-fns";
+import { getUser } from "@lib/utils";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
 if (!sessionCookie) {
-  return Astro.redirect("/login");
+  return Astro.redirect("/signin");
 }
 
 /* Verify session cookie and get user */
-let user;
-try {
-  const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
-  user = await auth.getUser(decodedClaims.uid);
-} catch (error) {
-  return Astro.redirect("/login");
+const user = await getUser(sessionCookie);
+if (!user) {
+  return Astro.redirect("/signin");
 }
 
 /* get birthdates from firestore */
