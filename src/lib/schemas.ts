@@ -25,6 +25,10 @@ const birthdaySchema = z.object({
   ),
 });
 
+const birthdaySchemaWithId = birthdaySchema.extend({
+  authorId: zfd.text(z.string()),
+});
+
 const register = userPasswordSchema
   .extend({
     name: zfd.text(z.string().min(2, "Name must be at least 2 character long")),
@@ -40,3 +44,4 @@ const register = userPasswordSchema
 export const loginSchema = zfd.formData(userPasswordSchema);
 export const registerSchema = zfd.formData(register);
 export const createBirthdaySchema = zfd.formData(birthdaySchema);
+export const updateBirthdaySchema = zfd.formData(birthdaySchemaWithId);

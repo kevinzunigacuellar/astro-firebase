@@ -6,7 +6,6 @@ import {
   Switch,
   Match,
 } from "solid-js";
-import { loginSchema } from "../lib/schemas";
 import {
   signInWithEmailAndPassword,
   inMemoryPersistence,
@@ -15,10 +14,11 @@ import {
   signInWithPopup,
   GithubAuthProvider,
 } from "firebase/auth";
-import { app } from "../lib/firebase/client";
-import ErrorPlaceholder from "./ErrorPlaceholder";
-import Error from "./Error";
+import { loginSchema } from "@lib/schemas";
+import { app } from "@lib/firebase/client";
 import type { z } from "zod";
+import ErrorPlaceholder from "@components/ErrorPlaceholder";
+import Error from "@components/Error";
 
 type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof loginSchema>>;
 type SucessForm = z.infer<typeof loginSchema>;
@@ -35,7 +35,7 @@ async function postFormData(formData: SucessForm) {
     password
   );
   const idToken = await userCredential.user.getIdToken();
-  const res = await fetch("/api/login", {
+  const res = await fetch("/api/auth/login", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${idToken}`,
@@ -57,7 +57,7 @@ async function githubSignIn() {
   const userCredential = await signInWithPopup(auth, provider);
   const idToken = await userCredential.user.getIdToken();
 
-  const res = await fetch("/api/login", {
+  const res = await fetch("/api/auth/login", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${idToken}`,
@@ -78,7 +78,7 @@ async function googleSignIn() {
   const provider = new GoogleAuthProvider();
   const userCredential = await signInWithPopup(auth, provider);
   const idToken = await userCredential.user.getIdToken();
-  const res = await fetch("/api/login", {
+  const res = await fetch("/api/auth/login", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${idToken}`,
@@ -117,14 +117,14 @@ export default function LoginForm() {
   return (
     <form class="grid grid-cols-1 gap-3 w-full" onSubmit={submit}>
       <div class="grid grid-cols-1 gap-2">
-        <label for="email" class="font-medium text-zinc-300 text-sm">
+        <label for="email" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
           Email
         </label>
         <input
           type="text"
           id="email"
           name="email"
-          class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
         />
         <Show
           when={clientErrors()?.fieldErrors.email}
@@ -134,14 +134,14 @@ export default function LoginForm() {
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
-        <label for="password" class="font-medium text-zinc-300 text-sm">
+        <label for="password" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
           Password
         </label>
         <input
           type="password"
           id="password"
           name="password"
-          class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
         />
         <Show
           when={clientErrors()?.fieldErrors.password}
@@ -151,7 +151,7 @@ export default function LoginForm() {
         </Show>
       </div>
       <button
-        class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="dark:bg-zinc-100 bg-zinc-900 border-zinc-900 py-1.5 border dark:border-zinc-100 rounded-md mt-2 dark:text-zinc-900 text-zinc-100 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
         type="submit"
         disabled={response.loading}
       >
@@ -160,15 +160,15 @@ export default function LoginForm() {
         </Show>
       </button>
       <div>
-        <hr class="h-0 border-t mt-4 border-zinc-600"></hr>
-        <p class="-mt-2.5 text-sm text-center text-zinc-400">
-          <span class="bg-zinc-900 px-4">Or with</span>
+        <hr class="h-0 border-t mt-4 dark:border-zinc-600 border-zinc-300"></hr>
+        <p class="-mt-2.5 text-sm text-center dark:text-zinc-400 text-zinc-500">
+          <span class="dark:bg-zinc-900 bg-zinc-100 px-4">Or with</span>
         </p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button
           onclick={googleSignIn}
-          class="bg-zinc-100 p-1.5 border border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="dark:bg-zinc-100 p-1.5 border border-zinc-300 dark:border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 dark:text-zinc-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
         >
           <svg
@@ -198,7 +198,7 @@ export default function LoginForm() {
         </button>
         <button
           onclick={githubSignIn}
-          class="bg-zinc-100 p-1.5 border border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-zinc-100 p-1.5 border border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
         >
           <svg
@@ -224,7 +224,6 @@ export default function LoginForm() {
           <Match when={response.error?.code === "auth/user-not-found"}>
             <Error message="You don't have an account with this email" />
           </Match>
-          {/* Fallback error */}
           <Match when={response()?.error}>
             <Error message={response().error} />
           </Match>

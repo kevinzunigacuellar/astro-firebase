@@ -6,5 +6,9 @@ export interface BirthdayType {
     year: number;
   };
   affiliation: string;
+  authorId: string;
+}
+
+export interface BirthdayTypeWithId extends BirthdayType {
   documentId: string;
 }

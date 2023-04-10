@@ -6,17 +6,17 @@ import {
   Switch,
   Match,
 } from "solid-js";
-import { registerSchema } from "../lib/schemas";
-import ErrorPlaceholder from "./ErrorPlaceholder";
-import Error from "./Error";
 import type { z } from "zod";
+import { registerSchema } from "@lib/schemas";
+import ErrorPlaceholder from "@components/ErrorPlaceholder";
+import Error from "@components/Error";
 
 type Errors = z.typeToFlattenedError<
   z.inferFormattedError<typeof registerSchema>
 >;
 
 async function postFormData(formData: FormData) {
-  const res = await fetch("/api/register", {
+  const res = await fetch("/api/auth/register", {
     method: "POST",
     body: formData,
   });

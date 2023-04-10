@@ -1,7 +1,7 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { auth } from "../lib/firebase/server";
-import CreateRecord from "../components/CreateRecord";
+import { auth } from "@lib/firebase/server";
+import Layout from "@layouts/Layout.astro";
+import BirthdayForm from "@components/BirthdayForm";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
@@ -25,7 +25,7 @@ try {
       <h1 class="font-semibold text-2xl text-white w-full mb-8">
         Add a new user
       </h1>
-      <CreateRecord client:load />
+      <BirthdayForm client:load />
     </section>
   </main>
 </Layout>

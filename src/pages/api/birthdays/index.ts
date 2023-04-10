@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
-import { firestore, auth } from "../../lib/firebase/server";
-import { createBirthdaySchema } from "../../lib/schemas";
+import { firestore, auth } from "@lib/firebase/server";
+import {
+  createBirthdaySchema,
+} from "@lib/schemas";
 
 export const post: APIRoute = async ({ request, cookies, redirect }) => {
   /* Get the ID token from header */

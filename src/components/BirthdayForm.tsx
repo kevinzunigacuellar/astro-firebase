@@ -1,33 +1,45 @@
-import { createResource, createSignal, Show, Suspense } from "solid-js";
-import { createBirthdaySchema } from "../lib/schemas";
-import ErrorPlaceholder from "./ErrorPlaceholder";
-import Error from "./Error";
+import { createResource, createSignal, Show } from "solid-js";
+import { createBirthdaySchema } from "@lib/schemas";
+import ErrorPlaceholder from "@components/ErrorPlaceholder";
+import Error from "@components/Error";
+import type { BirthdayTypeWithId } from "@lib/types";
 import type { z } from "zod";
 
 type Errors = z.typeToFlattenedError<
   z.inferFormattedError<typeof createBirthdaySchema>
 >;
 
-async function postFormData(formData: FormData) {
-  const res = await fetch("/api/birthdays", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!res.ok) {
-    const data = await res.json();
-    return data;
-  }
-
-  if (res.redirected) {
-    window.location.assign(res.url);
-  }
-}
-
-export default function CreateRecord() {
+export default function BirthdayForm({
+  birthdayInfo,
+  documentId,
+  type,
+}: {
+  birthdayInfo?: BirthdayTypeWithId;
+  type?: "edit";
+  documentId?: string;
+}) {
   const [formData, setFormData] = createSignal<FormData>();
-  const [response] = createResource(formData, postFormData);
+  const [response] = createResource(formData, submitFormData);
   const [clientErrors, setClientErrors] = createSignal<Errors>();
+
+  async function submitFormData(formData: FormData) {
+    if (type === "edit") {
+      formData.append("authorId", birthdayInfo?.authorId || "");
+    }
+    const res = await fetch(`/api/birthdays/${documentId ?? ""}`, {
+      method: type === "edit" ? "PUT" : "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return data;
+    }
+
+    if (res.redirected) {
+      window.location.assign(res.url);
+    }
+  }
 
   async function submit(e: SubmitEvent) {
     e.preventDefault();
@@ -43,6 +55,22 @@ export default function CreateRecord() {
     setFormData(data);
   }
 
+  async function deleteRecord() {
+    if (!documentId) return;
+    const res = await fetch(`/api/birthdays/${documentId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      return data;
+    }
+
+    if (res.redirected) {
+      window.location.assign(res.url);
+    }
+  }
+
   return (
     <form class="grid grid-cols-1 gap-3 w-full" onSubmit={submit}>
       <div class="grid grid-cols-1 gap-2">
@@ -52,7 +80,8 @@ export default function CreateRecord() {
         <input
           type="text"
           id="name"
-          placeholder="Samantha"
+          placeholder="Alice"
+          value={birthdayInfo?.name || ""}
           name="name"
           class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
         />
@@ -71,6 +100,7 @@ export default function CreateRecord() {
           type="text"
           placeholder="School"
           id="affiliation"
+          value={birthdayInfo?.affiliation || ""}
           name="affiliation"
           class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
         />
@@ -90,6 +120,7 @@ export default function CreateRecord() {
             type="number"
             id="day"
             name="day"
+            value={birthdayInfo?.date.day || ""}
             class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
           />
           <Show
@@ -107,6 +138,7 @@ export default function CreateRecord() {
             type="number"
             id="month"
             name="month"
+            value={birthdayInfo?.date.month || ""}
             class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
           />
           <Show
@@ -125,6 +157,7 @@ export default function CreateRecord() {
             id="year"
             name="year"
             min={1900}
+            value={birthdayInfo?.date.year || ""}
             max={new Date().getFullYear()}
             class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
           />
@@ -141,10 +174,22 @@ export default function CreateRecord() {
         type="submit"
         disabled={response.loading}
       >
-        <Show fallback="Create" when={response.loading}>
-          Creating...
+        <Show
+          fallback={type === "edit" ? "Edit" : "Create"}
+          when={response.loading}
+        >
+          {type === "edit" ? "Editing..." : "Creating..."}
         </Show>
       </button>
+      <Show when={type === "edit"}>
+        <button
+          class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900"
+          type="button"
+          onClick={deleteRecord}
+        >
+          Delete Record
+        </button>
+      </Show>
     </form>
   );
 }

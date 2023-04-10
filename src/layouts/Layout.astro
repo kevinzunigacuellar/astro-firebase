@@ -1,20 +1,44 @@
 ---
 interface Props {
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description} = Astro.props;
+const canonicalURL = new URL(Astro.url).href;
+const author = "Kevin Zuniga Cuellar"
+const twitter = "@kevinzunigacuel"
 ---
 
 <html lang="en" class="w-full h-full">
   <head>
     <meta charset="utf-8" />
+    <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <!-- <meta property="og:image" content={ogImageURL} /> -->
+    <!-- <meta property="og:image:alt" content={ogImage.alt} /> -->
+    <meta property="og:site_name" content={author} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta name="twitter:site" content={twitter} />
+    <meta name="twitter:creator" content={twitter} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <!-- <meta property="twitter:image" content={ogImageURL} /> -->
+    <meta name="robots" content="follow, index" />
+    <meta name="author" content={author} />
   </head>
-  <body class="w-full h-full flex flex-col bg-zinc-900">
+  <body class="w-full h-full flex flex-col dark:bg-zinc-900 bg-zinc-100">
     <slot />
   </body>
 </html>

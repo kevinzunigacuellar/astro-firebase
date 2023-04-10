@@ -1,0 +1,33 @@
+---
+import Layout from "@layouts/Layout.astro";
+import LoginForm from "@components/LoginForm";
+import { auth } from "@lib/firebase/server";
+
+/* Get session cookie */
+const sessionCookie = Astro.cookies.get("session").value;
+if (sessionCookie) {
+  const session = await auth
+    .verifySessionCookie(sessionCookie, true)
+    .catch(() => {
+      return undefined;
+    });
+
+  if (session) {
+    return Astro.redirect("/dashboard");
+  }
+}
+---
+
+<Layout title="Sign in to birthday tracker">
+  <main class="w-full h-full flex flex-col items-center justify-center p-4">
+    <section class="w-full max-w-md">
+      <h1 class="font-semibold text-2xl dark:text-zinc-100 text-zinc-900 w-full mb-1">Sign in</h1>
+      <p class="dark:text-zinc-400 text-zinc-500 text-sm mb-8 w-full">
+        New to birthday tracker? <a href="/signup" class="dark:text-blue-400 text-blue-500 underline underline-offset-2 font-medium"
+          >Sign up for an account</a
+        >
+      </p>
+      <LoginForm client:load />
+    </section>
+  </main>
+</Layout>

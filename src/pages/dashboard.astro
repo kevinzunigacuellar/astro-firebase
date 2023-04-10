@@ -1,9 +1,9 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import BirthdayList from "../components/BirthdayList";
-import SignoutButton from "../components/SignoutButton";
-import { auth, firestore } from "../lib/firebase/server";
-import type { BirthdayType } from "../lib/types";
+import Layout from "@layouts/Layout.astro";
+import BirthdayList from "@components/BirthdayList";
+import SignoutButton from "@components/SignoutButton";
+import { auth, firestore } from "@lib/firebase/server";
+import type { BirthdayTypeWithId } from "@lib/types";
 import { differenceInCalendarDays } from "date-fns";
 
 /* Get session cookie */
@@ -29,7 +29,7 @@ const querySnashot = await firestore
 
 const documents = querySnashot.docs.map((doc) => {
   return { documentId: doc.id, ...doc.data() };
-}) as BirthdayType[];
+}) as BirthdayTypeWithId[];
 
 /* compute difference in days and sort */
 const birthdays = documents

@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { auth } from "../../lib/firebase/server";
+import { auth } from "@lib/firebase/server";
 
 export const get: APIRoute = async ({ redirect, request, cookies }) => {
   /* Get the ID token from header */

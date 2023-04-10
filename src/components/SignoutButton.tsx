@@ -1,11 +1,12 @@
 export default function SignoutButton() {
   async function signout() {
-    const response = await fetch("/api/logout");
-    if (!response.ok) {
-      throw new Error("Something went wrong");
+    const res = await fetch("/api/auth/logout");
+    if (!res.ok) {
+      const data = await res.json();
+      return data;
     }
-    if (response.redirected) {
-      window.location.assign(response.url);
+    if (res.redirected) {
+      window.location.assign(res.url);
     }
   }
 
