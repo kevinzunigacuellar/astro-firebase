@@ -161,11 +161,11 @@ export default function LoginForm() {
       </button>
       <div>
         <hr class="h-0 border-t mt-4 dark:border-zinc-600 border-zinc-300"></hr>
-        <p class="-mt-2.5 text-sm text-center dark:text-zinc-400 text-zinc-500">
+        <p class="-mt-2.5 text-xs text-center dark:text-zinc-400 text-zinc-500">
           <span class="dark:bg-zinc-900 bg-zinc-100 px-4">Or with</span>
         </p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
         <button
           onclick={googleSignIn}
           class="dark:bg-zinc-100 p-1.5 border border-zinc-300 dark:border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 dark:text-zinc-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
