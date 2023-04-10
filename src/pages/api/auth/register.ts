@@ -33,5 +33,5 @@ export const post: APIRoute = async ({ request, redirect }) => {
       { status: 400 }
     );
   }
-  return redirect("/login", 302);
+  return redirect("/signin", 302);
 };
