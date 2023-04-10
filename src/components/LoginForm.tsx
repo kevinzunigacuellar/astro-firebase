@@ -198,7 +198,7 @@ export default function LoginForm() {
         </button>
         <button
           onclick={githubSignIn}
-          class="bg-zinc-100 p-1.5 border border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="dark:bg-zinc-100 p-1.5 border border-zinc-300 dark:border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 dark:text-zinc-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
         >
           <svg
