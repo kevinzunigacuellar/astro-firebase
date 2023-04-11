@@ -66,7 +66,7 @@ export const put: APIRoute = async ({ request, cookies, redirect, url }) => {
 };
 
 export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
-  /* Get the ID token from header */
+  /* Get user id from cookie */
   const sessionCookie = cookies.get("session").value;
   if (!sessionCookie) {
     return new Response(
@@ -76,22 +76,9 @@ export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
       { status: 401 }
     );
   }
-
-  /* Verify the ID token */
   const { uid } = await auth.verifySessionCookie(sessionCookie, true);
 
-  /* Verify if the user is the author */
-  const { authorId } = await request.json();
-  if (uid !== authorId) {
-    return new Response(
-      JSON.stringify({
-        error: "Unauthorized",
-      }),
-      { status: 401 }
-    );
-  }
-
-  /* Delete the record */
+  /* Get the record */
   const recordId = url.pathname.split("/").pop();
   if (!recordId) {
     return new Response(
@@ -102,6 +89,28 @@ export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
     );
   }
 
+  const record = await firestore.collection("birthdays").doc(recordId).get();
+  if (!record.exists) {
+    return new Response(
+      JSON.stringify({
+        error: "Record not found",
+      }),
+      { status: 404 }
+    );
+  }
+
+  /* Validate if the user is the author */ 
+  const { authorId } = record.data() as { authorId: string };
+  if (uid !== authorId) {
+    return new Response(
+      JSON.stringify({
+        error: "Unauthorized",
+      }),
+      { status: 401 }
+    );
+  }
+
+  /* Delete the record */
   await firestore.collection("birthdays").doc(recordId).delete();
   return redirect("/dashboard", 302);
 };
