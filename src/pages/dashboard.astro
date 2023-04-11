@@ -44,20 +44,20 @@ const birthdays = documents
 ---
 
 <Layout title="Dashboard">
-  <nav class="bg-zinc-950 border-b border-zinc-800">
+  <nav class="dark:bg-zinc-950 bg-zinc-50 border-b dark:border-zinc-800">
     <div class="p-4 flex justify-between items-center max-w-4xl mx-auto">
-      <span class="text-lg font-semibold text-zinc-100">Birthday Tracker</span>
+      <span class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Birthday Tracker</span>
       <SignoutButton client:idle />
     </div>
   </nav>
-  <main class="w-full grow flex flex-col items-center justify-center gap-2 p-4">
-    <h1 class="text-3xl text-zinc-300 font-semibold my-6">
-      Incoming Birthdays 🎈
+  <main class="w-full grow flex flex-col items-center justify-center px-4">
+    <h1 class="text-3xl w-full text-center dark:text-zinc-100 text-zinc-900 font-semibold my-6">
+      Incoming Birthdays 🎂
     </h1>
     <ul class="w-full grid grid-cols-1 gap-6 max-w-xl">
       <a
         href="/add"
-        class="bg-teal-950 border border-teal-900 p-4 rounded-md flex justify-between items-center text-teal-500"
+        class="dark:bg-purple-950 bg-purple-200 border border-purple-300 dark:border-purple-900 p-4 rounded-md flex justify-between items-center dark:text-purple-500 text-purple-800"
       >
         <span class="font-semibold">Add a new birthday</span>
         <svg
