@@ -23,11 +23,16 @@ export default function BirthdayForm({
   const [clientErrors, setClientErrors] = createSignal<Errors>();
 
   async function submitFormData(formData: FormData) {
+    let apiUrl = "/api/birthdays";
+    let method = "POST";
     if (type === "edit") {
       formData.append("authorId", birthdayInfo?.authorId || "");
+      apiUrl = `/api/birthdays/${documentId}`;
+      method = "PUT";
     }
-    const res = await fetch(`/api/birthdays/${documentId ?? ""}`, {
-      method: type === "edit" ? "PUT" : "POST",
+    
+    const res = await fetch(apiUrl, {
+      method,
       body: formData,
     });
 
