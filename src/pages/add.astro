@@ -2,6 +2,7 @@
 import { getUser } from "@lib/utils";
 import Layout from "@layouts/Layout.astro";
 import BirthdayForm from "@components/BirthdayForm";
+import AppLayout from "@layouts/AppLayout.astro";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
@@ -17,6 +18,7 @@ if (!user) {
 ---
 
 <Layout title="Sign in">
+  <AppLayout>
   <main class="w-full h-full flex flex-col items-center justify-center p-4">
     <section class="w-full max-w-md">
       <h1 class="font-semibold text-2xl text-white w-full mb-8">
@@ -25,4 +27,5 @@ if (!user) {
       <BirthdayForm client:load />
     </section>
   </main>
+</AppLayout>
 </Layout>

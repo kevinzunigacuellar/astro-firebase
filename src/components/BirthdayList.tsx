@@ -10,11 +10,11 @@ const today = new Date();
 const currentYear = today.getFullYear();
 const colorFilterMapping = new Map<string, string>();
 const colorPallete = [
-  "bg-indigo-800 text-indigo-200",
-  "bg-blue-800 text-blue-200",
-  "bg-green-800 text-green-200",
-  "bg-yellow-800 text-yellow-200",
-  "bg-purple-800 text-purple-200",
+  "dark:bg-indigo-800 dark:text-indigo-200 bg-indigo-200 text-indigo-800",
+  "dark:bg-blue-800 dark:text-blue-200 bg-blue-200 text-blue-800",
+  "dark:bg-green-800 dark:text-green-200 bg-green-200 text-green-800",
+  "dark:bg-yellow-800 dark:text-yellow-200 bg-yellow-200 text-yellow-800",
+  "dark:bg-purple-800 dark:text-purple-200 bg-purple-200 text-purple-800",
 ];
 
 export default function BirthdayList({
@@ -30,6 +30,7 @@ export default function BirthdayList({
 
   /* set a color for each filter */
   filters.forEach((filter, idx) => {
+    // skip the first item
     colorFilterMapping.set(
       filter,
       colorPallete[idx > colorPallete.length ? idx % colorPallete.length : idx]
@@ -61,11 +62,12 @@ export default function BirthdayList({
         <For each={filters}>
           {(filter) => (
             <button
-              class="px-4 py-1 rounded-md capitalize"
+              class="px-4 py-1 rounded-md uppercase font-medium text-sm tracking-wide border dark:border-zinc-900"
               classList={{
-                "bg-zinc-100": filter === currentfilter(),
-                "bg-zinc-700 text-zinc-200 hover:bg-zinc-600":
+                "dark:bg-zinc-100 bg-purple-300 border-purple-500 text-purple-900 dark:text-zinc-900": filter === currentfilter(),
+                "dark:bg-zinc-700 bg-white dark:text-zinc-200 text-zinc-600 dark:hover:border-purple-500 hover:border-purple-400 hover:bg-purple-100 hover:text-purple-800":
                   filter !== currentfilter(),
+                  
               }}
               onClick={() => filterHandler(filter)}
             >
@@ -83,21 +85,21 @@ export default function BirthdayList({
 
 function BirthdayCard({ birthday }: { birthday: BirthdayCardProps }) {
   return (
-    <li class="bg-zinc-800 rounded-md border border-zinc-700 p-4 flex justify-between items-center">
+    <li class="dark:bg-zinc-800 bg-white rounded-md border dark:border-zinc-700 p-4 flex justify-between items-center">
       <div>
         <p class="font-medium flex items-center gap-2">
-          <a href={`/edit/${birthday.documentId}`} class="text-white text-lg">
+          <a href={`/edit/${birthday.documentId}`} class="dark:text-white text-zinc-800 text-lg">
             {birthday.name}
           </a>
           <span
             class={`${colorFilterMapping.get(
               birthday.affiliation
-            )} text-xs px-2 py-0.5 rounded uppercase inline-block`}
+            )} text-xs px-2 py-0.5 font-semibold rounded uppercase inline-block`}
           >
             {birthday.affiliation}
           </span>
         </p>
-        <p class="text-zinc-400">
+        <p class="dark:text-zinc-400 text-zinc-500">
           <Show
             when={birthday.difference === 0 && birthday.date.year !== 0}
             fallback={format(
@@ -124,7 +126,7 @@ function BirthdayCard({ birthday }: { birthday: BirthdayCardProps }) {
 
 function DayCounter({ days }: { days: number }) {
   return (
-    <div class="flex flex-col items-center justify-center bg-zinc-700 py-1 px-2 rounded font-medium text-zinc-400 h-14 w-14 font-sans text-sm">
+    <div class="flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-700 py-1 px-2 rounded font-medium dark:text-zinc-400 text-zinc-600 h-14 w-14 font-sans text-sm">
       <span>{days}</span>
       <span>
         <Show when={days > 1} fallback={"day"}>

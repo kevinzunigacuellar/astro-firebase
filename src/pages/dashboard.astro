@@ -1,11 +1,11 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import BirthdayList from "@components/BirthdayList";
-import SignoutButton from "@components/SignoutButton";
 import { firestore } from "@lib/firebase/server";
 import type { BirthdayTypeWithId } from "@lib/types";
-import { differenceInCalendarDays } from "date-fns";
 import { getUser } from "@lib/utils";
+import { getDifferenceInDays } from "@lib/utils"
+import AppLayout from "@layouts/AppLayout.astro";
 
 /* Get session cookie */
 const sessionCookie = Astro.cookies.get("session").value;
@@ -30,27 +30,12 @@ const documents = querySnashot.docs.map((doc) => {
 }) as BirthdayTypeWithId[];
 
 /* compute difference in days and sort */
-const birthdays = documents
-  .map((birthday) => {
-    const today = new Date();
-    const date = new Date(
-      `${today.getFullYear()}-${birthday.date.month}-${birthday.date.day}`
-    );
-    const difference = differenceInCalendarDays(date, today);
-    const differenceInDays = difference < 0 ? 365 + difference : difference;
-    return { ...birthday, difference: differenceInDays };
-  })
-  .sort((a, b) => a.difference - b.difference);
+const birthdays = getDifferenceInDays(documents).sort((a, b) => a.difference - b.difference);
 ---
 
 <Layout title="Dashboard">
-  <nav class="dark:bg-zinc-950 bg-zinc-50 border-b dark:border-zinc-800">
-    <div class="p-4 flex justify-between items-center max-w-4xl mx-auto">
-      <span class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Birthday Tracker</span>
-      <SignoutButton client:idle />
-    </div>
-  </nav>
-  <main class="w-full grow flex flex-col items-center justify-center px-4">
+  <AppLayout>
+  <main class="w-full grow flex flex-col items-center px-4">
     <h1 class="text-3xl w-full text-center dark:text-zinc-100 text-zinc-900 font-semibold my-6">
       Incoming Birthdays 🎂
     </h1>
@@ -77,4 +62,5 @@ const birthdays = documents
       <BirthdayList birthdays={birthdays} client:idle />
     </ul>
   </main>
+</AppLayout>
 </Layout>
