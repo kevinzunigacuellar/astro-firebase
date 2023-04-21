@@ -12,3 +12,7 @@ export interface BirthdayType {
 export interface BirthdayTypeWithId extends BirthdayType {
   documentId: string;
 }
+
+export interface BirthdayWithDifference extends BirthdayTypeWithId {
+  difference: number;
+}

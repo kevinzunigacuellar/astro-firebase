@@ -1,81 +1,15 @@
-import { For, Show, batch, createSignal } from "solid-js";
-import type { BirthdayTypeWithId } from "@lib/types";
-import { format } from "date-fns";
+import { For } from "solid-js";
+import { Filters } from "./Filters";
+import { BirthdayCard } from "./BirthdayCard";
+import type { BirthdayWithDifference } from "@lib/types";
+import { useFilters } from "@hooks/useFilter";
 
-interface BirthdayCardProps extends BirthdayTypeWithId {
-  difference: number;
-}
-
-const today = new Date();
-const currentYear = today.getFullYear();
-const colorFilterMapping = new Map<string, string>();
-const colorPallete = [
-  "dark:bg-indigo-800 dark:text-indigo-200 bg-indigo-200 text-indigo-800",
-  "dark:bg-blue-800 dark:text-blue-200 bg-blue-200 text-blue-800",
-  "dark:bg-green-800 dark:text-green-200 bg-green-200 text-green-800",
-  "dark:bg-yellow-800 dark:text-yellow-200 bg-yellow-200 text-yellow-800",
-  "dark:bg-purple-800 dark:text-purple-200 bg-purple-200 text-purple-800",
-];
-
-export default function BirthdayList({
-  birthdays,
-}: {
-  birthdays: BirthdayCardProps[];
-}) {
-  /* create a list of filters */
-  const filters = [
-    "all",
-    ...new Set(birthdays.map((item) => item.affiliation)),
-  ];
-
-  /* set a color for each filter */
-  filters.forEach((filter, idx) => {
-    // skip the first item
-    colorFilterMapping.set(
-      filter,
-      colorPallete[idx > colorPallete.length ? idx % colorPallete.length : idx]
-    );
-  });
-
-  const [birthdayCards, setBirthdayCards] = createSignal(birthdays);
-  const [currentfilter, setCurrentFilter] = createSignal("all");
-
-  function filterHandler(filter: string) {
-    if (filter === "all") {
-      batch(() => {
-        setCurrentFilter("all");
-        setBirthdayCards(birthdays);
-      });
-    } else {
-      batch(() => {
-        setCurrentFilter(filter);
-        setBirthdayCards(
-          birthdays.filter((birthday) => birthday.affiliation === filter)
-        );
-      });
-    }
-  }
-
+export default function BirthdayList({birthdays} : {birthdays: BirthdayWithDifference[]}) {
+  const { birthdayCards, filters, filterBy, currentfilter } = useFilters(birthdays);
+  
   return (
     <>
-      <div class="flex gap-3">
-        <For each={filters}>
-          {(filter) => (
-            <button
-              class="px-4 py-1 rounded-md uppercase font-medium text-sm tracking-wide border dark:border-zinc-900"
-              classList={{
-                "dark:bg-zinc-100 bg-purple-300 border-purple-500 text-purple-900 dark:text-zinc-900": filter === currentfilter(),
-                "dark:bg-zinc-700 bg-white dark:text-zinc-200 text-zinc-600 dark:hover:border-purple-500 hover:border-purple-400 hover:bg-purple-100 hover:text-purple-800":
-                  filter !== currentfilter(),
-                  
-              }}
-              onClick={() => filterHandler(filter)}
-            >
-              {filter}
-            </button>
-          )}
-        </For>
-      </div>
+      <Filters filters={filters} filterBy={filterBy} currentfilter={currentfilter} />
       <For each={birthdayCards()}>
         {(birthday) => <BirthdayCard birthday={birthday} />}
       </For>
@@ -83,77 +17,4 @@ export default function BirthdayList({
   );
 }
 
-function BirthdayCard({ birthday }: { birthday: BirthdayCardProps }) {
-  return (
-    <li class="dark:bg-zinc-800 bg-white rounded-md border dark:border-zinc-700 p-4 flex justify-between items-center">
-      <div>
-        <p class="font-medium flex items-center gap-2">
-          <a href={`/edit/${birthday.documentId}`} class="dark:text-white text-zinc-800 text-lg">
-            {birthday.name}
-          </a>
-          <span
-            class={`${colorFilterMapping.get(
-              birthday.affiliation
-            )} text-xs px-2 py-0.5 font-semibold rounded uppercase inline-block`}
-          >
-            {birthday.affiliation}
-          </span>
-        </p>
-        <p class="dark:text-zinc-400 text-zinc-500">
-          <Show
-            when={birthday.difference === 0 && birthday.date.year !== 0}
-            fallback={format(
-              new Date(
-                `${currentYear}-${birthday.date.month}-${birthday.date.day}`
-              ),
-              "MMMM d"
-            )}
-          >
-            {`Turns ${currentYear - birthday.date.year}!`}
-          </Show>
-        </p>
-      </div>
 
-      <Show
-        when={birthday.difference === 0}
-        fallback={<DayCounter days={birthday.difference} />}
-      >
-        <CakeIcon />
-      </Show>
-    </li>
-  );
-}
-
-function DayCounter({ days }: { days: number }) {
-  return (
-    <div class="flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-700 py-1 px-2 rounded font-medium dark:text-zinc-400 text-zinc-600 h-14 w-14 font-sans text-sm">
-      <span>{days}</span>
-      <span>
-        <Show when={days > 1} fallback={"day"}>
-          days
-        </Show>
-      </span>
-    </div>
-  );
-}
-
-function CakeIcon() {
-  return (
-    <div class="flex flex-col items-center justify-center bg-yellow-800 py-1 px-2 rounded text-zinc-400 h-14 w-14">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width={1.5}
-        stroke="currentColor"
-        class="h-10 w-auto text-yellow-400"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75l-1.5.75a3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0L3 16.5m15-3.38a48.474 48.474 0 00-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.17c0 .62-.504 1.124-1.125 1.124H4.125A1.125 1.125 0 013 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 016 13.12M12.265 3.11a.375.375 0 11-.53 0L12 2.845l.265.265zm-3 0a.375.375 0 11-.53 0L9 2.845l.265.265zm6 0a.375.375 0 11-.53 0L15 2.845l.265.265z"
-        />
-      </svg>
-    </div>
-  );
-}
