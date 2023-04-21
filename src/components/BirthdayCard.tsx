@@ -28,7 +28,9 @@ export function BirthdayCard(props: BirthdayCardProps) {
           >
             {props.birthday.name}
           </a>
-          <Tag affiliation={props.birthday.affiliation} />
+          <Show when={props.birthday.affiliation} fallback={null}>
+            <Tag affiliation={props.birthday.affiliation as string} />
+          </Show>
         </p>
         <p class="dark:text-zinc-400 text-zinc-500">
           <Show

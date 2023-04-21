@@ -23,7 +23,7 @@ export function useFilters(birthdays: BirthdayWithDifference[]) {
 
   const filters = [
     "all",
-    ...new Set(birthdays.map((item) => item.affiliation)),
+    ...new Set(birthdays.map((item) => item.affiliation).filter(Boolean)),
   ];
 
   return {

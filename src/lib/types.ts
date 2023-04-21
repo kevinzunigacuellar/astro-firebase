@@ -5,7 +5,7 @@ export interface BirthdayType {
     month: number;
     year: number;
   };
-  affiliation: string;
+  affiliation?: string;
   authorId: string;
 }
 
