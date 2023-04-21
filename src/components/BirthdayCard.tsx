@@ -2,7 +2,6 @@ import type { BirthdayWithDifference } from "@lib/types";
 import { Show } from "solid-js";
 import { format } from "date-fns";
 
-
 interface BirthdayCardProps {
   birthday: BirthdayWithDifference;
 }
@@ -23,14 +22,19 @@ export function BirthdayCard(props: BirthdayCardProps) {
     <li class="dark:bg-zinc-800 bg-white rounded-md border dark:border-zinc-700 p-4 flex justify-between items-center">
       <div>
         <p class="font-medium flex items-center gap-2">
-          <a href={`/edit/${props.birthday.documentId}`} class="dark:text-white text-zinc-800 text-lg">
+          <a
+            href={`/edit/${props.birthday.documentId}`}
+            class="dark:text-white text-zinc-800 text-lg"
+          >
             {props.birthday.name}
           </a>
           <Tag affiliation={props.birthday.affiliation} />
         </p>
         <p class="dark:text-zinc-400 text-zinc-500">
           <Show
-            when={props.birthday.difference === 0 && props.birthday.date.year !== 0}
+            when={
+              props.birthday.difference === 0 && props.birthday.date.year !== 0
+            }
             fallback={format(
               new Date(
                 `${currentYear}-${props.birthday.date.month}-${props.birthday.date.day}`
@@ -87,7 +91,7 @@ function CakeIcon() {
   );
 }
 
-function Tag({affiliation} : {affiliation: string}) {
+function Tag({ affiliation }: { affiliation: string }) {
   if (!colorFilterMapping.has(affiliation)) {
     colorFilterMapping.set(
       affiliation,
@@ -95,9 +99,10 @@ function Tag({affiliation} : {affiliation: string}) {
     );
   }
   return (
-    <span class={`text-xs px-2 py-0.5 font-semibold rounded uppercase inline-block ${colorFilterMapping.get(
-      affiliation
-    )}`}
+    <span
+      class={`text-xs px-2 py-0.5 font-semibold rounded uppercase inline-block ${colorFilterMapping.get(
+        affiliation
+      )}`}
     >
       {affiliation}
     </span>

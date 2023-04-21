@@ -36,18 +36,18 @@ const birthdayInfo = birthdayInfoRef.data() as BirthdayTypeWithId;
 
 <Layout title="edit">
   <AppLayout>
-  <main class="w-full h-full flex flex-col items-center justify-center p-4">
-    <section class="w-full max-w-md">
-      <h1 class="font-semibold text-2xl text-white w-full mb-8">
-        Edit Birthday
-      </h1>
-      <BirthdayForm
-        client:load
-        birthdayInfo={birthdayInfo}
-        type="edit"
-        documentId={birthdayId}
-      />
-    </section>
-  </main>
-</AppLayout>
+    <main class="w-full h-full flex flex-col items-center justify-center p-4">
+      <section class="w-full max-w-md">
+        <h1 class="font-semibold text-2xl text-white w-full mb-8">
+          Edit Birthday
+        </h1>
+        <BirthdayForm
+          client:load
+          birthdayInfo={birthdayInfo}
+          type="edit"
+          documentId={birthdayId}
+        />
+      </section>
+    </main>
+  </AppLayout>
 </Layout>

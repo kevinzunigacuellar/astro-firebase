@@ -99,7 +99,7 @@ export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
     );
   }
 
-  /* Validate if the user is the author */ 
+  /* Validate if the user is the author */
   const { authorId } = record.data() as { authorId: string };
   if (uid !== authorId) {
     return new Response(

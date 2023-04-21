@@ -30,7 +30,7 @@ export default function BirthdayForm({
       apiUrl = `/api/birthdays/${documentId}`;
       method = "PUT";
     }
-    
+
     const res = await fetch(apiUrl, {
       method,
       body: formData,

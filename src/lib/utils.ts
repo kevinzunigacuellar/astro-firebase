@@ -1,6 +1,6 @@
 import { auth } from "@lib/firebase/server";
-import { differenceInCalendarDays } from "date-fns"
-import type { BirthdayTypeWithId} from "@lib/types";
+import { differenceInCalendarDays } from "date-fns";
+import type { BirthdayTypeWithId } from "@lib/types";
 
 export async function getUser(cookie: string) {
   try {
@@ -13,8 +13,7 @@ export async function getUser(cookie: string) {
 }
 
 export function getDifferenceInDays(birthdays: BirthdayTypeWithId[]) {
-  const birthdaysWithDifference = birthdays
-  .map((birthday) => {
+  const birthdaysWithDifference = birthdays.map((birthday) => {
     const today = new Date();
     const date = new Date(
       `${today.getFullYear()}-${birthday.date.month}-${birthday.date.day}`
@@ -22,6 +21,6 @@ export function getDifferenceInDays(birthdays: BirthdayTypeWithId[]) {
     const difference = differenceInCalendarDays(date, today);
     const differenceInDays = difference < 0 ? 365 + difference : difference;
     return { ...birthday, difference: differenceInDays };
-  })
+  });
   return birthdaysWithDifference;
 }

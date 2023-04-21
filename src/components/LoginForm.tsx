@@ -117,7 +117,10 @@ export default function LoginForm() {
   return (
     <form class="grid grid-cols-1 gap-3 w-full" onSubmit={submit}>
       <div class="grid grid-cols-1 gap-2">
-        <label for="email" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+        <label
+          for="email"
+          class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+        >
           Email
         </label>
         <input
@@ -134,7 +137,10 @@ export default function LoginForm() {
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
-        <label for="password" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+        <label
+          for="password"
+          class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+        >
           Password
         </label>
         <input

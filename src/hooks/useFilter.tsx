@@ -1,7 +1,7 @@
 import { batch, createSignal } from "solid-js";
 import type { BirthdayWithDifference } from "@lib/types";
 
-export function useFilters(birthdays :BirthdayWithDifference[]) {
+export function useFilters(birthdays: BirthdayWithDifference[]) {
   const [birthdayCards, setBirthdayCards] = createSignal(birthdays);
   const [currentfilter, setCurrentFilter] = createSignal("all");
 
@@ -24,12 +24,12 @@ export function useFilters(birthdays :BirthdayWithDifference[]) {
   const filters = [
     "all",
     ...new Set(birthdays.map((item) => item.affiliation)),
-  ]
+  ];
 
   return {
     birthdayCards,
     currentfilter,
     filterBy,
-    filters
+    filters,
   };
 }

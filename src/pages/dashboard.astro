@@ -4,7 +4,7 @@ import BirthdayList from "@components/BirthdayList";
 import { firestore } from "@lib/firebase/server";
 import type { BirthdayTypeWithId } from "@lib/types";
 import { getUser } from "@lib/utils";
-import { getDifferenceInDays } from "@lib/utils"
+import { getDifferenceInDays } from "@lib/utils";
 import AppLayout from "@layouts/AppLayout.astro";
 
 /* Get session cookie */
@@ -30,37 +30,41 @@ const documents = querySnashot.docs.map((doc) => {
 }) as BirthdayTypeWithId[];
 
 /* compute difference in days and sort */
-const birthdays = getDifferenceInDays(documents).sort((a, b) => a.difference - b.difference);
+const birthdays = getDifferenceInDays(documents).sort(
+  (a, b) => a.difference - b.difference
+);
 ---
 
 <Layout title="Dashboard">
   <AppLayout>
-  <main class="w-full grow flex flex-col items-center px-4">
-    <h1 class="text-3xl w-full text-center dark:text-zinc-100 text-zinc-900 font-semibold my-6">
-      Incoming Birthdays 🎂
-    </h1>
-    <ul class="w-full grid grid-cols-1 gap-6 max-w-xl">
-      <a
-        href="/add"
-        class="dark:bg-purple-950 bg-purple-200 border border-purple-300 dark:border-purple-900 p-4 rounded-md flex justify-between items-center dark:text-purple-500 text-purple-800"
+    <main class="w-full grow flex flex-col items-center px-4">
+      <h1
+        class="text-3xl w-full text-center dark:text-zinc-100 text-zinc-900 font-semibold my-6"
       >
-        <span class="font-semibold">Add a new birthday</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-6 h-6"
+        Incoming Birthdays 🎂
+      </h1>
+      <ul class="w-full grid grid-cols-1 gap-6 max-w-xl">
+        <a
+          href="/add"
+          class="dark:bg-purple-950 bg-purple-200 border border-purple-300 dark:border-purple-900 p-4 rounded-md flex justify-between items-center dark:text-purple-500 text-purple-800"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"></path>
-        </svg>
-      </a>
-      <BirthdayList birthdays={birthdays} client:idle />
-    </ul>
-  </main>
-</AppLayout>
+          <span class="font-semibold">Add a new birthday</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"></path>
+          </svg>
+        </a>
+        <BirthdayList birthdays={birthdays} client:idle />
+      </ul>
+    </main>
+  </AppLayout>
 </Layout>
