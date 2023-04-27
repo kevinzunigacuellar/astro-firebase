@@ -9,7 +9,7 @@ interface FiltersProps {
 export function Filters(props: FiltersProps) {
   return (
     <Show when={props.filters?.length !== 0} fallback={null}>
-      <div class="flex gap-3">
+      <div class="flex gap-3 overflow-x-auto sm:overflow-x-visible">
         <For each={props.filters}>
           {(filter) => (
             <button
