@@ -15,7 +15,7 @@ export default function BirthdayList({
   return (
     <>
       <Filters
-        filters={filters}
+        filters={filters ?? []}
         filterBy={filterBy}
         currentfilter={currentfilter}
       />
