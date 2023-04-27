@@ -4,10 +4,17 @@ import SignoutButton from "@components/SignoutButton";
 
 <nav class="dark:bg-zinc-950 bg-zinc-50 border-b dark:border-zinc-800">
   <div class="p-4 flex justify-between items-center max-w-4xl mx-auto">
-    <span class="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
-      >Birthday Tracker</span
+    <a class="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+    href="/dashboard/"
+      >Birthday Tracker</a
     >
-    <SignoutButton client:idle />
+    <div class="flex gap-3 items-center">
+      <a class="flex gap-1 text-violet-600 border border-violet-200 dark:border-violet-800 dark:hover:border-violet-500 hover:border-violet-300 dark:text-violet-200 dark:bg-violet-800 dark:hover:bg-violet-700 bg-violet-200 px-3 py-1 rounded-md font-medium" href="/add/"><span>New</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      </a>
+      <SignoutButton client:idle />
+    </div>
   </div>
 </nav>
 <slot />
