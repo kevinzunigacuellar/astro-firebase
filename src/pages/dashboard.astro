@@ -39,9 +39,9 @@ const birthdays = getDifferenceInDays(documents).sort(
   <AppLayout>
     <main class="w-full grow flex flex-col items-center px-4">
       <h1
-        class="text-2xl sm:text-3xl w-full text-center dark:text-zinc-100 text-zinc-900 font-semibold mt-10 mb-6"
+        class="text-xl sm:text-3xl max-w-xl dark:text-zinc-100 w-full text-zinc-900 font-semibold mt-10 mb-6"
       >
-        Incoming Birthdays 🎂
+        Incoming Birthdays
       </h1>
       <BirthdayList birthdays={birthdays} client:idle />
     </main>

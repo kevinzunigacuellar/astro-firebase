@@ -13,7 +13,7 @@ export default function BirthdayList({
     useFilters(birthdays);
 
   return (
-    <ul class="w-full grid grid-cols-1 gap-6 max-w-xl">
+    <ul class="w-full grid grid-cols-1 gap-6 max-w-xl pb-4">
       <Filters
         filters={filters ?? []}
         filterBy={filterBy}

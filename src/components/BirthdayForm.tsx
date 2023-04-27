@@ -11,12 +11,10 @@ type Errors = z.typeToFlattenedError<
 
 export default function BirthdayForm({
   birthdayInfo,
-  documentId,
   type,
 }: {
   birthdayInfo?: BirthdayTypeWithId;
   type?: "edit";
-  documentId?: string;
 }) {
   const [formData, setFormData] = createSignal<FormData>();
   const [response] = createResource(formData, submitFormData);
@@ -25,9 +23,9 @@ export default function BirthdayForm({
   async function submitFormData(formData: FormData) {
     let apiUrl = "/api/birthdays";
     let method = "POST";
-    if (type === "edit") {
-      formData.append("authorId", birthdayInfo?.authorId || "");
-      apiUrl = `/api/birthdays/${documentId}`;
+    if (type === "edit" && birthdayInfo?.authorId) {
+      formData.append("authorId", birthdayInfo.authorId);
+      apiUrl = `/api/birthdays/${birthdayInfo?.documentId}`;
       method = "PUT";
     }
 
@@ -60,7 +58,7 @@ export default function BirthdayForm({
     setFormData(data);
   }
 
-  async function deleteRecord() {
+  async function deleteRecord(documentId?: string) {
     if (!documentId) return;
     const res = await fetch(`/api/birthdays/${documentId}`, {
       method: "DELETE",
@@ -79,16 +77,16 @@ export default function BirthdayForm({
   return (
     <form class="grid grid-cols-1 gap-3 w-full" onSubmit={submit}>
       <div class="grid grid-cols-1 gap-2">
-        <label for="name" class="font-medium text-zinc-300 text-sm">
+        <label for="name" 
+        class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
           Name
         </label>
         <input
           type="text"
           id="name"
-          placeholder="Alice"
-          value={birthdayInfo?.name || ""}
+          value={birthdayInfo?.name ?? ""}
           name="name"
-          class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
         />
         <Show
           when={clientErrors()?.fieldErrors.name}
@@ -98,16 +96,15 @@ export default function BirthdayForm({
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
-        <label for="affiliation" class="font-medium text-zinc-300 text-sm">
+        <label for="affiliation" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
           Affiliation
         </label>
         <input
           type="text"
-          placeholder="School"
           id="affiliation"
-          value={birthdayInfo?.affiliation || ""}
+          value={birthdayInfo?.affiliation ?? ""}
           name="affiliation"
-          class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
         />
         <Show
           when={clientErrors()?.fieldErrors.affiliation}
@@ -118,15 +115,15 @@ export default function BirthdayForm({
       </div>
       <div class="flex flex-row gap-4 w-full">
         <div class="grid grid-cols-1 gap-2 flex-1">
-          <label for="day" class="font-medium text-zinc-300 text-sm">
+          <label for="day" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
             Day
           </label>
           <input
             type="number"
             id="day"
             name="day"
-            value={birthdayInfo?.date.day || ""}
-            class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+            value={birthdayInfo?.date.day ?? ""}
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
           />
           <Show
             when={clientErrors()?.fieldErrors.day}
@@ -136,15 +133,15 @@ export default function BirthdayForm({
           </Show>
         </div>
         <div class="grid grid-cols-1 gap-2 flex-1">
-          <label for="month" class="font-medium text-zinc-300 text-sm">
+          <label for="month" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
             Month
           </label>
           <input
             type="number"
             id="month"
             name="month"
-            value={birthdayInfo?.date.month || ""}
-            class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+            value={birthdayInfo?.date.month ?? ""}
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
           />
           <Show
             when={clientErrors()?.fieldErrors.month}
@@ -154,7 +151,7 @@ export default function BirthdayForm({
           </Show>
         </div>
         <div class="grid grid-cols-1 gap-2 flex-1">
-          <label for="year" class="font-medium text-zinc-300 text-sm">
+          <label for="year" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
             Year
           </label>
           <input
@@ -162,9 +159,9 @@ export default function BirthdayForm({
             id="year"
             name="year"
             min={1900}
-            value={birthdayInfo?.date.year || ""}
+            value={birthdayInfo?.date.year ?? ""}
             max={new Date().getFullYear()}
-            class="rounded-md py-1 px-3 bg-zinc-800 text-zinc-300 border border-zinc-700 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:bg-zinc-900 focus:ring-opacity-60"
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
           />
           <Show
             when={clientErrors()?.fieldErrors.year}
@@ -175,7 +172,7 @@ export default function BirthdayForm({
         </div>
       </div>
       <button
-        class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900"
+        class="dark:bg-zinc-100 bg-zinc-900 border-zinc-900 py-1.5 border dark:border-zinc-100 rounded-md mt-1 dark:text-zinc-900 text-zinc-100 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
         type="submit"
         disabled={response.loading}
       >
@@ -188,9 +185,10 @@ export default function BirthdayForm({
       </button>
       <Show when={type === "edit"}>
         <button
-          class="bg-zinc-100 py-1.5 border border-zinc-100 rounded-md mt-2 text-black font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600 focus:ring-offset-zinc-900"
+          class="dark:bg-red-600 bg-red-400 hover:bg-red-500 border-transparent py-1.5 border rounded-md mt-1 dark:text-white text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
-          onClick={deleteRecord}
+          disabled={response.loading}
+          onClick={() => deleteRecord(birthdayInfo?.documentId)}
         >
           Delete Record
         </button>

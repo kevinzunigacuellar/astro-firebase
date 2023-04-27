@@ -19,7 +19,7 @@ const colorPallete = [
 
 export function BirthdayCard(props: BirthdayCardProps) {
   return (
-    <li class="dark:bg-zinc-800 bg-white rounded-md border dark:border-zinc-700 p-4 flex justify-between items-center">
+    <li class="dark:bg-zinc-800 bg-white rounded-md shadow-sm p-4 flex justify-between items-center">
       <div>
         <p class="font-medium flex items-center gap-2">
           <a
