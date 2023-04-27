@@ -13,7 +13,7 @@ export default function BirthdayList({
     useFilters(birthdays);
 
   return (
-    <>
+    <ul class="w-full grid grid-cols-1 gap-6 max-w-xl">
       <Filters
         filters={filters ?? []}
         filterBy={filterBy}
@@ -22,6 +22,6 @@ export default function BirthdayList({
       <For each={birthdayCards()}>
         {(birthday) => <BirthdayCard birthday={birthday} />}
       </For>
-    </>
+    </ul>
   );
 }
