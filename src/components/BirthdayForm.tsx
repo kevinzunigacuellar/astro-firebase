@@ -89,7 +89,7 @@ export default function BirthdayForm({
           id="name"
           value={birthdayInfo?.name ?? ""}
           name="name"
-          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 focus:border-transparent dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:focus:bg-zinc-900 focus:bg-white"
         />
         <Show
           when={clientErrors()?.fieldErrors.name}
@@ -110,7 +110,7 @@ export default function BirthdayForm({
           id="affiliation"
           value={birthdayInfo?.affiliation ?? ""}
           name="affiliation"
-          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 focus:border-transparent dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:focus:bg-zinc-900 focus:bg-white"
         />
         <Show
           when={clientErrors()?.fieldErrors.affiliation}
@@ -132,7 +132,7 @@ export default function BirthdayForm({
             id="day"
             name="day"
             value={birthdayInfo?.date.day ?? ""}
-            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 focus:border-transparent dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:focus:bg-zinc-900 focus:bg-white"
           />
           <Show
             when={clientErrors()?.fieldErrors.day}
@@ -153,7 +153,7 @@ export default function BirthdayForm({
             id="month"
             name="month"
             value={birthdayInfo?.date.month ?? ""}
-            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 focus:border-transparent dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:focus:bg-zinc-900 focus:bg-white"
           />
           <Show
             when={clientErrors()?.fieldErrors.month}
@@ -176,7 +176,7 @@ export default function BirthdayForm({
             min={1900}
             value={birthdayInfo?.date.year ?? ""}
             max={new Date().getFullYear()}
-            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 focus:border-transparent dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:focus:bg-zinc-900 focus:bg-white"
           />
           <Show
             when={clientErrors()?.fieldErrors.year}
@@ -187,7 +187,7 @@ export default function BirthdayForm({
         </div>
       </div>
       <button
-        class="dark:bg-zinc-100 bg-zinc-900 border-zinc-900 py-1.5 border dark:border-zinc-100 rounded-md mt-1 dark:text-zinc-900 text-zinc-100 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="dark:bg-violet-700 bg-violet-300 border-transparent hover:border-violet-400 dark:hover:border-violet-500 py-1.5 border rounded-md mt-1 dark:text-violet-100 dark:hover:text-white text-violet-700 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 disabled:opacity-50 disabled:cursor-not-allowed"
         type="submit"
         disabled={response.loading}
       >

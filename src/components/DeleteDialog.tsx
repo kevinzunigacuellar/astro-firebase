@@ -20,7 +20,7 @@ async function deleteRecord(documentId?: string) {
 export function DeleteDialog({ documentId }: { documentId?: string }) {
   return (
     <AlertDialog.Root>
-      <AlertDialog.Trigger class="dark:bg-red-600 bg-red-400 hover:bg-red-500 border-transparent py-1.5 border rounded-md mt-1 dark:text-white text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed">
+      <AlertDialog.Trigger class="dark:bg-red-600 bg-red-400 hover:bg-red-400 border-transparent py-1.5 border rounded-md mt-1 dark:text-white text-red-50 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed">
         Delete record
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
