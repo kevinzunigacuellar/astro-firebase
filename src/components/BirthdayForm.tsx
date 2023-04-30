@@ -4,6 +4,7 @@ import { ErrorPlaceholder } from "@components/ErrorPlaceholder";
 import { Error } from "@components/Error";
 import type { BirthdayTypeWithId } from "@lib/types";
 import type { z } from "zod";
+import { DeleteDialog } from "@components/DeleteDialog";
 
 type Errors = z.typeToFlattenedError<
   z.inferFormattedError<typeof createBirthdaySchema>
@@ -198,14 +199,7 @@ export default function BirthdayForm({
         </Show>
       </button>
       <Show when={type === "edit"}>
-        <button
-          class="dark:bg-red-600 bg-red-400 hover:bg-red-500 border-transparent py-1.5 border rounded-md mt-1 dark:text-white text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
-          type="button"
-          disabled={response.loading}
-          onClick={() => deleteRecord(birthdayInfo?.documentId)}
-        >
-          Delete Record
-        </button>
+        <DeleteDialog documentId={birthdayInfo?.documentId} />
       </Show>
     </form>
   );
