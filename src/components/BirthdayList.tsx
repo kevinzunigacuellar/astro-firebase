@@ -1,6 +1,6 @@
 import { For } from "solid-js";
-import { Filters } from "./Filters";
-import { BirthdayCard } from "./BirthdayCard";
+import { Filters } from "@components/Filters";
+import { BirthdayCard } from "@components/BirthdayCard";
 import type { BirthdayWithDifference } from "@lib/types";
 import { useFilters } from "@hooks/useFilter";
 

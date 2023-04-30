@@ -1,7 +1,7 @@
 import { createResource, createSignal, Show } from "solid-js";
 import { createBirthdaySchema } from "@lib/schemas";
-import ErrorPlaceholder from "@components/ErrorPlaceholder";
-import Error from "@components/Error";
+import { ErrorPlaceholder } from "@components/ErrorPlaceholder";
+import { Error } from "@components/Error";
 import type { BirthdayTypeWithId } from "@lib/types";
 import type { z } from "zod";
 
@@ -77,8 +77,10 @@ export default function BirthdayForm({
   return (
     <form class="grid grid-cols-1 gap-3 w-full" onSubmit={submit}>
       <div class="grid grid-cols-1 gap-2">
-        <label for="name" 
-        class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+        <label
+          for="name"
+          class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+        >
           Name
         </label>
         <input
@@ -96,7 +98,10 @@ export default function BirthdayForm({
         </Show>
       </div>
       <div class="grid grid-cols-1 gap-2">
-        <label for="affiliation" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+        <label
+          for="affiliation"
+          class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+        >
           Affiliation
         </label>
         <input
@@ -115,7 +120,10 @@ export default function BirthdayForm({
       </div>
       <div class="flex flex-row gap-4 w-full">
         <div class="grid grid-cols-1 gap-2 flex-1">
-          <label for="day" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+          <label
+            for="day"
+            class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+          >
             Day
           </label>
           <input
@@ -133,7 +141,10 @@ export default function BirthdayForm({
           </Show>
         </div>
         <div class="grid grid-cols-1 gap-2 flex-1">
-          <label for="month" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+          <label
+            for="month"
+            class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+          >
             Month
           </label>
           <input
@@ -151,7 +162,10 @@ export default function BirthdayForm({
           </Show>
         </div>
         <div class="grid grid-cols-1 gap-2 flex-1">
-          <label for="year" class="font-medium dark:text-zinc-300 text-zinc-900 text-sm">
+          <label
+            for="year"
+            class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+          >
             Year
           </label>
           <input

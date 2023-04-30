@@ -8,8 +8,8 @@ import {
 } from "solid-js";
 import type { z } from "zod";
 import { registerSchema } from "@lib/schemas";
-import ErrorPlaceholder from "@components/ErrorPlaceholder";
-import Error from "@components/Error";
+import { ErrorPlaceholder } from "@components/ErrorPlaceholder";
+import { Error } from "@components/Error";
 
 type Errors = z.typeToFlattenedError<
   z.inferFormattedError<typeof registerSchema>

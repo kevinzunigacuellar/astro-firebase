@@ -17,8 +17,8 @@ import {
 import { loginSchema } from "@lib/schemas";
 import { app } from "@lib/firebase/client";
 import type { z } from "zod";
-import ErrorPlaceholder from "@components/ErrorPlaceholder";
-import Error from "@components/Error";
+import { ErrorPlaceholder } from "@components/ErrorPlaceholder";
+import { Error } from "@components/Error";
 
 type Errors = z.typeToFlattenedError<z.inferFormattedError<typeof loginSchema>>;
 type SucessForm = z.infer<typeof loginSchema>;
