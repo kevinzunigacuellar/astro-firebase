@@ -1,4 +1,4 @@
-.alert-dialog__overlay {
+.overlay {
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -6,10 +6,10 @@
   backdrop-filter: blur(6px);
   animation: overlayHide 250ms ease 100ms forwards;
 }
-.alert-dialog__overlay[data-expanded] {
+.overlay[data-expanded] {
   animation: overlayShow 250ms ease;
 }
-.alert-dialog__content {
+.content {
   z-index: 50;
   max-width: min(calc(100vw - 16px), 500px);
   border: 1px solid hsl(240 5% 84%);
@@ -19,7 +19,7 @@
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   animation: contentHide 300ms ease-in forwards;
 }
-.alert-dialog__content[data-expanded] {
+.content[data-expanded] {
   animation: contentShow 300ms ease-out;
 }
 @keyframes overlayShow {

@@ -1,5 +1,5 @@
 import { AlertDialog } from "@kobalte/core";
-import "../styles/dialog.css";
+import style from "../styles/dialog.module.css"
 
 async function deleteRecord(documentId?: string) {
   if (!documentId) return;
@@ -24,9 +24,9 @@ export function DeleteDialog({ documentId }: { documentId?: string }) {
         Delete record
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay class="alert-dialog__overlay" />
+        <AlertDialog.Overlay class={style.overlay} />
         <div class="fixed z-50 flex items-center justify-center inset-0">
-          <AlertDialog.Content class="alert-dialog__content">
+          <AlertDialog.Content class={style.content}>
             <AlertDialog.Title class="text-xl font-semibold">
               Are you absolutely sure?
             </AlertDialog.Title>
@@ -35,12 +35,12 @@ export function DeleteDialog({ documentId }: { documentId?: string }) {
               account and remove your data from our servers.
             </AlertDialog.Description>
             <div class="flex justify-end gap-3">
-              <AlertDialog.CloseButton class="inline-block bg-zinc-100 py-1.5 px-4 font-medium rounded text-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-300">
+              <AlertDialog.CloseButton class="inline-block bg-zinc-100 py-1.5 px-4 font-medium rounded text-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-300 hover:bg-zinc-200">
                 Cancel
               </AlertDialog.CloseButton>
               <button
                 onClick={() => deleteRecord(documentId)}
-                class="inline-block bg-red-100 py-1.5 px-4 font-medium rounded text-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+                class="inline-block bg-red-100 py-1.5 px-4 font-medium rounded text-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-200"
               >
                 Yes, delete account
               </button>
