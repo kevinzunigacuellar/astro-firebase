@@ -1,5 +1,5 @@
 import { AlertDialog } from "@kobalte/core";
-import style from "../styles/dialog.module.css"
+import style from "../styles/dialog.module.css";
 
 async function deleteRecord(documentId?: string) {
   if (!documentId) return;

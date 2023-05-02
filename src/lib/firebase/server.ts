@@ -1,4 +1,5 @@
-import admin from "firebase-admin";
+import type { ServiceAccount } from "firebase-admin";
+import { initializeApp, cert } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
@@ -17,8 +18,8 @@ const serviceAccount = {
     "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-rap76%40astro-auth-6cc43.iam.gserviceaccount.com",
 };
 
-export const app = admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+export const app = initializeApp({
+  credential: cert(serviceAccount as ServiceAccount),
 });
 
 export const auth = getAuth(app);
