@@ -42,7 +42,7 @@ export function DeleteDialog({ documentId }: { documentId?: string }) {
                 onClick={() => deleteRecord(documentId)}
                 class="inline-block bg-red-100 py-1.5 px-4 font-medium rounded text-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-200"
               >
-                Yes, delete account
+                Yes, delete birthday
               </button>
             </div>
           </AlertDialog.Content>
