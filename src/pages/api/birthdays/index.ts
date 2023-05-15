@@ -3,7 +3,7 @@ import { firestore, auth } from "@lib/firebase/server";
 import { createBirthdaySchema } from "@lib/schemas";
 
 export const post: APIRoute = async ({ request, cookies, redirect }) => {
-  /* Get the ID token from header */
+  /* Get cookie from header */
   const sessionCookie = cookies.get("session").value;
   if (!sessionCookie) {
     return new Response(
@@ -13,7 +13,7 @@ export const post: APIRoute = async ({ request, cookies, redirect }) => {
       { status: 401 }
     );
   }
-  /* Verify the ID token */
+  /* Verify cookie */
   const { uid } = await auth.verifySessionCookie(sessionCookie, true);
   const formData = await request.formData();
   const result = createBirthdaySchema.safeParse(formData);
@@ -27,18 +27,28 @@ export const post: APIRoute = async ({ request, cookies, redirect }) => {
       { status: 400 }
     );
   }
-
   const { name, day, month, affiliation, year } = result.data;
-  const newRecord = await firestore.collection("birthdays").add({
-    name,
-    date: {
-      day,
-      month,
-      year: year ?? 0,
-    },
-    affiliation: affiliation ? affiliation.toLowerCase() : "",
-    authorId: uid,
-  });
 
-  return redirect("/dashboard", 302);
+  /* Create the record */
+  try {
+    await firestore.collection("birthdays").add({
+      name,
+      date: {
+        day,
+        month,
+        year: year ?? 0,
+      },
+      affiliation: affiliation ? affiliation.toLowerCase() : "",
+      authorId: uid,
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: "Something went wrong",
+      }),
+      { status: 500 }
+    );
+  }
+
+  return redirect("/dashboard");
 };

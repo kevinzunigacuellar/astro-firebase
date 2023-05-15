@@ -1,9 +1,10 @@
 import type { APIRoute } from "astro";
 import { auth, firestore } from "@lib/firebase/server";
 import { updateBirthdaySchema } from "@lib/schemas";
+import type { BirthdayTypeWithId } from "@lib/types";
 
-export const put: APIRoute = async ({ request, cookies, redirect, url }) => {
-  /* Get the ID token from header */
+export const put: APIRoute = async ({ request, cookies, redirect, params }) => {
+  /* Get cookie from header */
   const sessionCookie = cookies.get("session").value;
   if (!sessionCookie) {
     return new Response(
@@ -14,12 +15,12 @@ export const put: APIRoute = async ({ request, cookies, redirect, url }) => {
     );
   }
 
-  /* Verify the ID token */
+  /* Verify cookie */
   const { uid } = await auth.verifySessionCookie(sessionCookie, true);
   const formData = await request.formData();
   const result = updateBirthdaySchema.safeParse(formData);
 
-  /* Validate the data */
+  /* Validate the form data */
   if (!result.success) {
     return new Response(
       JSON.stringify({
@@ -28,30 +29,43 @@ export const put: APIRoute = async ({ request, cookies, redirect, url }) => {
       { status: 400 }
     );
   }
-
   const { name, day, month, affiliation, year, authorId } = result.data;
   if (uid !== authorId) {
     return new Response(
       JSON.stringify({
-        error: "Unauthorized",
+        error: "Unauthorized, you are not the author of this record",
       }),
       { status: 401 }
     );
   }
 
-  /* Update the record */
-  const recordId = url.pathname.split("/").pop();
-  if (!recordId) {
+  /* Get the record id */
+  const documentId = params.id;
+  if (!documentId) {
     return new Response(
       JSON.stringify({
-        error: "Put request must have a document ID",
+        error: "A put request must have a document ID",
       }),
       { status: 400 }
     );
   }
-  await firestore
+  
+  /* Validate if the record exists */
+  const record = await firestore.collection("birthdays").doc(documentId).get();
+  if (!record.exists) {
+    return new Response(
+      JSON.stringify({
+        error: "Record not found",
+      }),
+      { status: 404 }
+    );
+  }
+
+  /* Update record */
+  try {
+    await firestore
     .collection("birthdays")
-    .doc(recordId)
+    .doc(documentId)
     .update({
       name,
       date: {
@@ -61,11 +75,17 @@ export const put: APIRoute = async ({ request, cookies, redirect, url }) => {
       },
       affiliation: affiliation ? affiliation.toLowerCase() : "",
     });
-
+  } catch (error: any) {
+    return new Response(
+      JSON.stringify({
+        error: "Something went wrong"
+      }),
+    )
+  }
   return redirect("/dashboard", 302);
 };
 
-export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
+export const del: APIRoute = async ({ cookies, redirect, params }) => {
   /* Get user id from cookie */
   const sessionCookie = cookies.get("session").value;
   if (!sessionCookie) {
@@ -78,9 +98,9 @@ export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
   }
   const { uid } = await auth.verifySessionCookie(sessionCookie, true);
 
-  /* Get the record */
-  const recordId = url.pathname.split("/").pop();
-  if (!recordId) {
+  /* Get the record id */
+  const documentId = params.id;
+  if (!documentId) {
     return new Response(
       JSON.stringify({
         error: "Delete request must have a document ID",
@@ -88,8 +108,8 @@ export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
       { status: 400 }
     );
   }
-
-  const record = await firestore.collection("birthdays").doc(recordId).get();
+  /* Validate if the record exists */
+  const record = await firestore.collection("birthdays").doc(documentId).get();
   if (!record.exists) {
     return new Response(
       JSON.stringify({
@@ -100,17 +120,26 @@ export const del: APIRoute = async ({ request, cookies, redirect, url }) => {
   }
 
   /* Validate if the user is the author */
-  const { authorId } = record.data() as { authorId: string };
+  const { authorId } = record.data() as BirthdayTypeWithId;
   if (uid !== authorId) {
     return new Response(
       JSON.stringify({
-        error: "Unauthorized",
+        error: "Unauthorized, you are not the author of this record",
       }),
       { status: 401 }
     );
   }
 
   /* Delete the record */
-  await firestore.collection("birthdays").doc(recordId).delete();
+  try {
+    await firestore.collection("birthdays").doc(documentId).delete();
+  } catch (error: any) {
+    return new Response(
+      JSON.stringify({
+        error: "Something went wrong",
+      }),
+      { status: 500 }
+    );
+  }
   return redirect("/dashboard", 302);
 };
